@@ -1,0 +1,486 @@
+object MainForm: TMainForm
+  Left = 0
+  Top = 0
+  Caption = 'KeyNote'
+  ClientHeight = 581
+  ClientWidth = 384
+  FormFactor.Width = 1440
+  FormFactor.Height = 900
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object tbHeader: TToolBar
+    Anchors = []
+    Size.Width = 384.000000000000000000
+    Size.Height = 48.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object lblToolbar: TLabel
+      Align = Contents
+      Size.Width = 384.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'toollabel'
+      TextSettings.HorzAlign = Center
+      Text = 'KeyNote: A musical scale generator'
+    end
+  end
+  object tcMain: TTabControl
+    Align = Client
+    FullSize = True
+    Size.Width = 384.000000000000000000
+    Size.Height = 533.000000000000000000
+    Size.PlatformDefault = False
+    TabHeight = 49.000000000000000000
+    TabIndex = 0
+    TabOrder = 1
+    TabPosition = PlatformDefault
+    Sizes = (
+      384s
+      484s
+      384s
+      484s
+      384s
+      484s
+      384s
+      484s)
+    object tabMain: TTabItem
+      CustomIcon = <
+        item
+        end>
+      TextSettings.WordWrap = True
+      IsSelected = True
+      Size.Width = 95.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemtoprated'
+      TabOrder = 0
+      Text = 'Generator'
+      ExplicitSize.cx = 50.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object pnlInput: TPanel
+        Position.X = 24.000000000000000000
+        Position.Y = 31.000000000000000000
+        Size.Width = 329.000000000000000000
+        Size.Height = 218.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        object lblScale: TLabel
+          FocusControl = cbScale
+          Position.X = 24.000000000000000000
+          Position.Y = 23.000000000000000000
+          Text = '&Scale:'
+          TabOrder = 0
+          TabStop = False
+        end
+        object cbScale: TComboBox
+          Position.X = 24.000000000000000000
+          Position.Y = 47.000000000000000000
+          Size.Width = 281.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 1
+        end
+        object lblKey: TLabel
+          FocusControl = cbKey
+          Position.X = 24.000000000000000000
+          Position.Y = 87.000000000000000000
+          Text = '&Key:'
+          TabOrder = 2
+          TabStop = False
+        end
+        object cbKey: TComboBox
+          Position.X = 24.000000000000000000
+          Position.Y = 111.000000000000000000
+          TabOrder = 3
+        end
+        object btnGenerate: TButton
+          Position.X = 24.000000000000000000
+          Position.Y = 156.000000000000000000
+          Size.Width = 281.000000000000000000
+          Size.Height = 34.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 6
+          Text = '&Generate'
+        end
+      end
+      object pnlOutput: TPanel
+        Position.X = 24.000000000000000000
+        Position.Y = 279.000000000000000000
+        Size.Width = 329.000000000000000000
+        Size.Height = 170.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object btnPlay: TButton
+          Position.X = 24.000000000000000000
+          Position.Y = 128.000000000000000000
+          Size.Width = 80.000000000000000000
+          Size.Height = 25.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 24
+          Text = '&Play'
+        end
+        object lbResults: TListBox
+          Position.X = 24.000000000000000000
+          Position.Y = 24.000000000000000000
+          Size.Width = 281.000000000000000000
+          Size.Height = 81.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 11
+          DisableFocusEffect = True
+          DefaultItemStyles.ItemStyle = ''
+          DefaultItemStyles.GroupHeaderStyle = ''
+          DefaultItemStyles.GroupFooterStyle = ''
+          Viewport.Width = 277.000000000000000000
+          Viewport.Height = 77.000000000000000000
+          object ghNotes: TListBoxGroupHeader
+            TextSettings.Font.StyleExt = {00070000000000000004000000}
+            StyledSettings = [Family, Size, FontColor, Other]
+            TabOrder = 1
+            Text = 'Notes'
+          end
+          object lbiNotes: TListBoxItem
+            Position.Y = 19.000000000000000000
+            TabOrder = 0
+          end
+          object ghIntervals: TListBoxGroupHeader
+            TextSettings.Font.StyleExt = {00070000000000000004000000}
+            StyledSettings = [Family, Size, FontColor, Other]
+            Position.Y = 38.000000000000000000
+            TabOrder = 2
+            Text = 'Intervals'
+          end
+          object lbiIntervals: TListBoxItem
+            Position.Y = 57.000000000000000000
+            TabOrder = 3
+          end
+        end
+      end
+    end
+    object tabEdit: TTabItem
+      CustomIcon = <
+        item
+        end>
+      TextSettings.WordWrap = True
+      IsSelected = False
+      Size.Width = 95.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemcontacts'
+      TabOrder = 0
+      Text = 'Edit Scales'
+      ExplicitSize.cx = 50.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object lblCSName: TLabel
+        Position.X = 16.000000000000000000
+        Position.Y = 31.000000000000000000
+        Text = 'Scale Name:'
+        TabOrder = 0
+        TabStop = False
+      end
+      object lblCSRingNum: TLabel
+        Position.X = 16.000000000000000000
+        Position.Y = 87.000000000000000000
+        Text = 'Ring number:'
+        TabOrder = 2
+        TabStop = False
+      end
+      object lblCSOr: TLabel
+        Position.X = 16.000000000000000000
+        Position.Y = 144.000000000000000000
+        Text = 'Or'
+        TabOrder = 4
+        TabStop = False
+      end
+      object edCSRingNum: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 3
+        Position.X = 16.000000000000000000
+        Position.Y = 111.000000000000000000
+        Size.Width = 113.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+      end
+      object gbIntervals: TGroupBox
+        Position.X = 16.000000000000000000
+        Position.Y = 175.000000000000000000
+        Size.Width = 353.000000000000000000
+        Size.Height = 178.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Enter intervals'
+        TabOrder = 5
+        object chkCSInterval1: TCheckBox
+          Tag = 1
+          Enabled = False
+          IsChecked = True
+          Position.X = 24.000000000000000000
+          Position.Y = 24.000000000000000000
+          TabOrder = 0
+          Text = 'Root note'
+        end
+        object chkCSInterval4: TCheckBox
+          Tag = 4
+          Position.X = 24.000000000000000000
+          Position.Y = 96.000000000000000000
+          TabOrder = 3
+          Text = 'Minor 3rd'
+        end
+        object chkCSInterval3: TCheckBox
+          Tag = 3
+          Position.X = 24.000000000000000000
+          Position.Y = 72.000000000000000000
+          TabOrder = 2
+          Text = 'Major 2nd'
+        end
+        object chkCSInterval2: TCheckBox
+          Tag = 2
+          Position.X = 24.000000000000000000
+          Position.Y = 48.000000000000000000
+          TabOrder = 1
+          Text = 'Minor 2nd'
+        end
+        object chkCSInterval5: TCheckBox
+          Tag = 5
+          Position.X = 24.000000000000000000
+          Position.Y = 120.000000000000000000
+          TabOrder = 4
+          Text = 'Major 3rd'
+        end
+        object chkCSInterval6: TCheckBox
+          Tag = 6
+          Position.X = 24.000000000000000000
+          Position.Y = 144.000000000000000000
+          TabOrder = 5
+          Text = 'Perfect 4th'
+        end
+        object chkCSInterval7: TCheckBox
+          Tag = 7
+          Position.X = 168.000000000000000000
+          Position.Y = 24.000000000000000000
+          TabOrder = 6
+          Text = 'Diminished 5th'
+        end
+        object chkCSInterval8: TCheckBox
+          Tag = 8
+          Position.X = 168.000000000000000000
+          Position.Y = 48.000000000000000000
+          TabOrder = 7
+          Text = 'Perfect 5th'
+        end
+        object chkCSInterval9: TCheckBox
+          Tag = 9
+          Position.X = 168.000000000000000000
+          Position.Y = 72.000000000000000000
+          TabOrder = 8
+          Text = 'Augmented 5th'
+        end
+        object chkCSInterval10: TCheckBox
+          Tag = 9
+          Position.X = 168.000000000000000000
+          Position.Y = 96.000000000000000000
+          TabOrder = 9
+          Text = 'Major 6th'
+        end
+        object chkCSInterval11: TCheckBox
+          Tag = 11
+          Position.X = 168.000000000000000000
+          Position.Y = 120.000000000000000000
+          TabOrder = 10
+          Text = 'Minor 7th'
+        end
+        object chkCSInterval12: TCheckBox
+          Tag = 12
+          Position.X = 168.000000000000000000
+          Position.Y = 144.000000000000000000
+          TabOrder = 11
+          Text = 'Major 7th'
+        end
+      end
+      object btnCSAccept: TButton
+        Position.X = 152.000000000000000000
+        Position.Y = 367.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 25.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 6
+        Text = 'btnCSAccept'
+      end
+      object cbedCSName: TComboEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 1
+        ItemHeight = 19.000000000000000000
+        ItemIndex = -1
+        Position.X = 16.000000000000000000
+        Position.Y = 55.000000000000000000
+        Size.Width = 353.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+      end
+    end
+    object tabImportExport: TTabItem
+      CustomIcon = <
+        item
+        end>
+      TextSettings.WordWrap = True
+      IsSelected = False
+      Size.Width = 95.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemrecent'
+      TabOrder = 0
+      Text = 'Import / Export'
+      ExplicitSize.cx = 50.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object btnImportScales: TButton
+        Position.X = 24.000000000000000000
+        Position.Y = 31.000000000000000000
+        Size.Width = 145.000000000000000000
+        Size.Height = 34.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Text = 'btnImportScales'
+      end
+      object btnExportScales: TButton
+        Position.X = 216.000000000000000000
+        Position.Y = 31.000000000000000000
+        Size.Width = 145.000000000000000000
+        Size.Height = 34.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 9
+        Text = 'btnExportScales'
+      end
+      object ListBox1: TListBox
+        Position.X = 24.000000000000000000
+        Position.Y = 111.000000000000000000
+        Size.Width = 337.000000000000000000
+        Size.Height = 266.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 20
+        DisableFocusEffect = True
+        DefaultItemStyles.ItemStyle = ''
+        DefaultItemStyles.GroupHeaderStyle = ''
+        DefaultItemStyles.GroupFooterStyle = ''
+        Viewport.Width = 333.000000000000000000
+        Viewport.Height = 262.000000000000000000
+      end
+      object lblImportedScales: TLabel
+        Position.X = 24.000000000000000000
+        Position.Y = 87.000000000000000000
+        Text = 'Imported Scales'
+        TabOrder = 1
+        TabStop = False
+      end
+      object btnConfirmImport: TButton
+        Position.X = 24.000000000000000000
+        Position.Y = 391.000000000000000000
+        Size.Width = 137.000000000000000000
+        Size.Height = 25.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 30
+        Text = 'btnConfirmImport'
+      end
+    end
+    object tabSettings: TTabItem
+      CustomIcon = <
+        item
+        end>
+      TextSettings.WordWrap = True
+      IsSelected = False
+      Size.Width = 97.000000000000000000
+      Size.Height = 49.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = 'tabitemmostrecent'
+      TabOrder = 0
+      Text = 'Settings'
+      ExplicitSize.cx = 50.000000000000000000
+      ExplicitSize.cy = 49.000000000000000000
+      object sbSettings: TVertScrollBox
+        Align = Client
+        Size.Width = 384.000000000000000000
+        Size.Height = 484.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Viewport.Width = 384.000000000000000000
+        Viewport.Height = 484.000000000000000000
+        object cbIntervalStyle: TComboBox
+          Position.X = 152.000000000000000000
+          Position.Y = 24.000000000000000000
+          Size.Width = 209.000000000000000000
+          Size.Height = 22.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object lbiUKIntervalStyle: TListBoxItem
+            Size.Width = 19.000000000000000000
+            Size.Height = 19.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            Text = 'Tone / Semitone (T/S)'
+          end
+          object lbiUSIntervalStyle: TListBoxItem
+            Size.Width = 19.000000000000000000
+            Size.Height = 19.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            Text = 'Whole note / Half note (W/H)'
+          end
+        end
+        object lblKeyStyle: TLabel
+          Position.X = 16.000000000000000000
+          Position.Y = 67.000000000000000000
+          Text = 'Start key list at:'
+          TabOrder = 1
+          TabStop = False
+        end
+        object cbKeyStyle: TComboBox
+          Position.X = 152.000000000000000000
+          Position.Y = 64.000000000000000000
+          TabOrder = 2
+          object lbiKeyStyleA: TListBoxItem
+            TabOrder = 0
+            Text = 'A'
+          end
+          object lbiKeyStyleC: TListBoxItem
+            TabOrder = 1
+            Text = 'C'
+          end
+        end
+        object lblIntervalStyle: TLabel
+          FocusControl = cbIntervalStyle
+          Position.X = 16.000000000000000000
+          Position.Y = 27.000000000000000000
+          Text = 'Interval display style:'
+          TabOrder = 3
+          TabStop = False
+        end
+      end
+    end
+  end
+  object gestureMgr: TGestureManager
+    Sensitivity = 80.000000000000000000
+    Left = 344
+    Top = 8
+    GestureData = <
+      item
+        Control = Owner
+        Collection = <
+          item
+            GestureID = sgiLeft
+          end
+          item
+            GestureID = sgiRight
+          end>
+      end>
+  end
+  object dlgExport: TSaveDialog
+    Left = 8
+    Top = 8
+  end
+  object dlgImport: TOpenDialog
+    Left = 40
+    Top = 8
+  end
+  object alMain: TActionList
+    Left = 312
+    Top = 8
+  end
+end
