@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{BAE7EEDE-C4F5-4B7F-B9E8-3B9324CA9D86}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="KeyNote.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Test\KeyNoteTests.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="KeyNote">
+        <MSBuild Projects="KeyNote.dproj"/>
+    </Target>
+    <Target Name="KeyNote:Clean">
+        <MSBuild Projects="KeyNote.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="KeyNote:Make">
+        <MSBuild Projects="KeyNote.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="KeyNoteTests">
+        <MSBuild Projects="Test\KeyNoteTests.dproj"/>
+    </Target>
+    <Target Name="KeyNoteTests:Clean">
+        <MSBuild Projects="Test\KeyNoteTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="KeyNoteTests:Make">
+        <MSBuild Projects="Test\KeyNoteTests.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="KeyNote;KeyNoteTests"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="KeyNote:Clean;KeyNoteTests:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="KeyNote:Make;KeyNoteTests:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
