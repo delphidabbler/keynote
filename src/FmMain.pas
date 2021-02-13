@@ -42,25 +42,25 @@ type
     cbKeyStyle: TComboBox;
     lbiKeyStyleC: TListBoxItem;
     lbiKeyStyleA: TListBoxItem;
-    lblCSName: TLabel;
-    lblCSRingNum: TLabel;
-    lblCSOr: TLabel;
-    edCSRingNum: TEdit;
-    gbIntervals: TGroupBox;
-    chkCSInterval1: TCheckBox;
-    chkCSInterval4: TCheckBox;
-    chkCSInterval3: TCheckBox;
-    chkCSInterval2: TCheckBox;
-    chkCSInterval5: TCheckBox;
-    chkCSInterval6: TCheckBox;
-    chkCSInterval7: TCheckBox;
-    chkCSInterval8: TCheckBox;
-    chkCSInterval9: TCheckBox;
-    chkCSInterval10: TCheckBox;
-    chkCSInterval11: TCheckBox;
-    chkCSInterval12: TCheckBox;
-    btnCSAccept: TButton;
-    cbedCSName: TComboEdit;
+    lblESName: TLabel;
+    lblESScaleNumber: TLabel;
+    lblESOr: TLabel;
+    edESScaleNumber: TEdit;
+    gbESIntervals: TGroupBox;
+    chkESInterval1: TCheckBox;
+    chkESInterval4: TCheckBox;
+    chkESInterval3: TCheckBox;
+    chkESInterval2: TCheckBox;
+    chkESInterval5: TCheckBox;
+    chkESInterval6: TCheckBox;
+    chkESInterval7: TCheckBox;
+    chkESInterval8: TCheckBox;
+    chkESInterval9: TCheckBox;
+    chkESInterval10: TCheckBox;
+    chkESInterval11: TCheckBox;
+    chkESInterval12: TCheckBox;
+    btnESAccept: TButton;
+    cbedESName: TComboEdit;
     btnImportScales: TButton;
     btnExportScales: TButton;
     ListBox1: TListBox;
@@ -69,6 +69,21 @@ type
     dlgExport: TSaveDialog;
     dlgImport: TOpenDialog;
     alMain: TActionList;
+    actESAccept: TAction;
+    btnESEditScale: TButton;
+    btnESNewScale: TButton;
+    btnESRenameScale: TButton;
+    actESEditScale: TAction;
+    actESNewScale: TAction;
+    actESRenameScale: TAction;
+    lblESCategory: TLabel;
+    cbESCategories: TComboBox;
+    btnESEditCategories: TButton;
+    actESEditCategories: TAction;
+    btnESCancel: TButton;
+    actESCancel: TAction;
+    btnESDeleteScale: TButton;
+    actESDeleteScale: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo;
       var Handled: Boolean);
@@ -82,6 +97,9 @@ var
   MainForm: TMainForm;
 
 implementation
+
+uses
+  UMusic;
 
 {$R *.fmx}
 
@@ -102,7 +120,6 @@ begin
         tcMain.ActiveTab := tcMain.Tabs[tcMain.TabIndex+1];
       Handled := True;
     end;
-
     sgiRight:
     begin
       if tcMain.ActiveTab <> tcMain.Tabs[0] then

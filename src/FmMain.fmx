@@ -1,8 +1,10 @@
 object MainForm: TMainForm
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = Single
   Caption = 'KeyNote'
-  ClientHeight = 581
+  ClientHeight = 589
   ClientWidth = 384
   FormFactor.Width = 1440
   FormFactor.Height = 900
@@ -29,7 +31,7 @@ object MainForm: TMainForm
     Align = Client
     FullSize = True
     Size.Width = 384.000000000000000000
-    Size.Height = 533.000000000000000000
+    Size.Height = 541.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
     TabIndex = 0
@@ -37,13 +39,13 @@ object MainForm: TMainForm
     TabPosition = PlatformDefault
     Sizes = (
       384s
-      484s
+      492s
       384s
-      484s
+      492s
       384s
-      484s
+      492s
       384s
-      484s)
+      492s)
     object tabMain: TTabItem
       CustomIcon = <
         item
@@ -171,45 +173,45 @@ object MainForm: TMainForm
       Text = 'Edit Scales'
       ExplicitSize.cx = 50.000000000000000000
       ExplicitSize.cy = 49.000000000000000000
-      object lblCSName: TLabel
+      object lblESName: TLabel
         Position.X = 16.000000000000000000
-        Position.Y = 31.000000000000000000
+        Position.Y = 52.000000000000000000
         Text = 'Scale Name:'
-        TabOrder = 0
-        TabStop = False
-      end
-      object lblCSRingNum: TLabel
-        Position.X = 16.000000000000000000
-        Position.Y = 87.000000000000000000
-        Text = 'Ring number:'
-        TabOrder = 2
-        TabStop = False
-      end
-      object lblCSOr: TLabel
-        Position.X = 16.000000000000000000
-        Position.Y = 144.000000000000000000
-        Text = 'Or'
         TabOrder = 4
         TabStop = False
       end
-      object edCSRingNum: TEdit
-        Touch.InteractiveGestures = [LongTap, DoubleTap]
-        TabOrder = 3
+      object lblESScaleNumber: TLabel
         Position.X = 16.000000000000000000
-        Position.Y = 111.000000000000000000
+        Position.Y = 169.000000000000000000
+        Text = 'Scale number:'
+        TabOrder = 9
+        TabStop = False
+      end
+      object lblESOr: TLabel
+        Position.X = 16.000000000000000000
+        Position.Y = 227.000000000000000000
+        Text = 'Or'
+        TabOrder = 11
+        TabStop = False
+      end
+      object edESScaleNumber: TEdit
+        Touch.InteractiveGestures = [LongTap, DoubleTap]
+        TabOrder = 10
+        Position.X = 16.000000000000000000
+        Position.Y = 193.000000000000000000
         Size.Width = 113.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
       end
-      object gbIntervals: TGroupBox
+      object gbESIntervals: TGroupBox
         Position.X = 16.000000000000000000
-        Position.Y = 175.000000000000000000
+        Position.Y = 255.000000000000000000
         Size.Width = 353.000000000000000000
         Size.Height = 178.000000000000000000
         Size.PlatformDefault = False
         Text = 'Enter intervals'
-        TabOrder = 5
-        object chkCSInterval1: TCheckBox
+        TabOrder = 12
+        object chkESInterval1: TCheckBox
           Tag = 1
           Enabled = False
           IsChecked = True
@@ -218,77 +220,77 @@ object MainForm: TMainForm
           TabOrder = 0
           Text = 'Root note'
         end
-        object chkCSInterval4: TCheckBox
+        object chkESInterval4: TCheckBox
           Tag = 4
           Position.X = 24.000000000000000000
           Position.Y = 96.000000000000000000
           TabOrder = 3
           Text = 'Minor 3rd'
         end
-        object chkCSInterval3: TCheckBox
+        object chkESInterval3: TCheckBox
           Tag = 3
           Position.X = 24.000000000000000000
           Position.Y = 72.000000000000000000
           TabOrder = 2
           Text = 'Major 2nd'
         end
-        object chkCSInterval2: TCheckBox
+        object chkESInterval2: TCheckBox
           Tag = 2
           Position.X = 24.000000000000000000
           Position.Y = 48.000000000000000000
           TabOrder = 1
           Text = 'Minor 2nd'
         end
-        object chkCSInterval5: TCheckBox
+        object chkESInterval5: TCheckBox
           Tag = 5
           Position.X = 24.000000000000000000
           Position.Y = 120.000000000000000000
           TabOrder = 4
           Text = 'Major 3rd'
         end
-        object chkCSInterval6: TCheckBox
+        object chkESInterval6: TCheckBox
           Tag = 6
           Position.X = 24.000000000000000000
           Position.Y = 144.000000000000000000
           TabOrder = 5
           Text = 'Perfect 4th'
         end
-        object chkCSInterval7: TCheckBox
+        object chkESInterval7: TCheckBox
           Tag = 7
           Position.X = 168.000000000000000000
           Position.Y = 24.000000000000000000
           TabOrder = 6
           Text = 'Diminished 5th'
         end
-        object chkCSInterval8: TCheckBox
+        object chkESInterval8: TCheckBox
           Tag = 8
           Position.X = 168.000000000000000000
           Position.Y = 48.000000000000000000
           TabOrder = 7
           Text = 'Perfect 5th'
         end
-        object chkCSInterval9: TCheckBox
+        object chkESInterval9: TCheckBox
           Tag = 9
           Position.X = 168.000000000000000000
           Position.Y = 72.000000000000000000
           TabOrder = 8
-          Text = 'Augmented 5th'
+          Text = 'Minor 6th'
         end
-        object chkCSInterval10: TCheckBox
+        object chkESInterval10: TCheckBox
           Tag = 9
           Position.X = 168.000000000000000000
           Position.Y = 96.000000000000000000
           TabOrder = 9
           Text = 'Major 6th'
         end
-        object chkCSInterval11: TCheckBox
+        object chkESInterval11: TCheckBox
           Tag = 11
           Position.X = 168.000000000000000000
           Position.Y = 120.000000000000000000
           TabOrder = 10
           Text = 'Minor 7th'
         end
-        object chkCSInterval12: TCheckBox
+        object chkESInterval12: TCheckBox
           Tag = 12
           Position.X = 168.000000000000000000
           Position.Y = 144.000000000000000000
@@ -296,25 +298,101 @@ object MainForm: TMainForm
           Text = 'Major 7th'
         end
       end
-      object btnCSAccept: TButton
-        Position.X = 152.000000000000000000
-        Position.Y = 367.000000000000000000
-        Size.Width = 80.000000000000000000
+      object btnESAccept: TButton
+        Action = actESAccept
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 79.000000000000000000
+        Position.Y = 447.000000000000000000
+        Size.Width = 108.000000000000000000
         Size.Height = 25.000000000000000000
         Size.PlatformDefault = False
-        TabOrder = 6
-        Text = 'btnCSAccept'
+        TabOrder = 13
       end
-      object cbedCSName: TComboEdit
+      object cbedESName: TComboEdit
         Touch.InteractiveGestures = [LongTap, DoubleTap]
-        TabOrder = 1
+        TabOrder = 5
         ItemHeight = 19.000000000000000000
         ItemIndex = -1
         Position.X = 16.000000000000000000
-        Position.Y = 55.000000000000000000
+        Position.Y = 76.000000000000000000
         Size.Width = 353.000000000000000000
         Size.Height = 22.000000000000000000
         Size.PlatformDefault = False
+      end
+      object btnESEditScale: TButton
+        Action = actESEditScale
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 108.000000000000000000
+        Position.Y = 18.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+      end
+      object btnESNewScale: TButton
+        Action = actESNewScale
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 18.000000000000000000
+        Position.Y = 18.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+      end
+      object btnESRenameScale: TButton
+        Action = actESRenameScale
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 198.000000000000000000
+        Position.Y = 18.000000000000000000
+        Size.Width = 80.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 2
+      end
+      object lblESCategory: TLabel
+        Position.X = 16.000000000000000000
+        Position.Y = 110.000000000000000000
+        Text = 'Category:'
+        TabOrder = 6
+      end
+      object cbESCategories: TComboBox
+        Position.X = 16.000000000000000000
+        Position.Y = 134.000000000000000000
+        Size.Width = 257.000000000000000000
+        Size.Height = 22.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 7
+      end
+      object btnESEditCategories: TButton
+        Action = actESEditCategories
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 289.000000000000000000
+        Position.Y = 134.000000000000000000
+        TabOrder = 8
+      end
+      object btnESCancel: TButton
+        Action = actESCancel
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 197.000000000000000000
+        Position.Y = 447.000000000000000000
+        Size.Width = 108.000000000000000000
+        Size.Height = 25.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 14
+      end
+      object btnESDeleteScale: TButton
+        Action = actESDeleteScale
+        Enabled = True
+        ImageIndex = -1
+        Position.X = 289.000000000000000000
+        Position.Y = 18.000000000000000000
+        TabOrder = 3
       end
     end
     object tabImportExport: TTabItem
@@ -397,11 +475,11 @@ object MainForm: TMainForm
       object sbSettings: TVertScrollBox
         Align = Client
         Size.Width = 384.000000000000000000
-        Size.Height = 484.000000000000000000
+        Size.Height = 492.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         Viewport.Width = 384.000000000000000000
-        Viewport.Height = 484.000000000000000000
+        Viewport.Height = 492.000000000000000000
         object cbIntervalStyle: TComboBox
           Position.X = 152.000000000000000000
           Position.Y = 24.000000000000000000
@@ -455,6 +533,14 @@ object MainForm: TMainForm
       end
     end
   end
+  object dlgExport: TSaveDialog
+    Left = 8
+    Top = 8
+  end
+  object dlgImport: TOpenDialog
+    Left = 40
+    Top = 8
+  end
   object gestureMgr: TGestureManager
     Sensitivity = 80.000000000000000000
     Left = 344
@@ -471,16 +557,36 @@ object MainForm: TMainForm
           end>
       end>
   end
-  object dlgExport: TSaveDialog
-    Left = 8
-    Top = 8
-  end
-  object dlgImport: TOpenDialog
-    Left = 40
-    Top = 8
-  end
   object alMain: TActionList
     Left = 312
     Top = 8
+    object actESAccept: TAction
+      Category = 'Edit Scales'
+      Text = 'actESAccept'
+    end
+    object actESEditScale: TAction
+      Category = 'Edit Scales'
+      Text = 'Edit'
+    end
+    object actESNewScale: TAction
+      Category = 'Edit Scales'
+      Text = 'New'
+    end
+    object actESRenameScale: TAction
+      Category = 'Edit Scales'
+      Text = 'Rename...'
+    end
+    object actESEditCategories: TAction
+      Category = 'Edit Scales'
+      Text = 'Edit...'
+    end
+    object actESCancel: TAction
+      Category = 'Edit Scales'
+      Text = 'Cancel'
+    end
+    object actESDeleteScale: TAction
+      Category = 'Edit Scales'
+      Text = 'Delete...'
+    end
   end
 end
