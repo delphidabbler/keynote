@@ -15,34 +15,27 @@ type
     tbHeader: TToolBar;
     lblToolbar: TLabel;
     tcMain: TTabControl;
-    tabMain: TTabItem;
-    tabEdit: TTabItem;
-    tabImportExport: TTabItem;
+    tabGenerator: TTabItem;
+    tabEditScales: TTabItem;
+    tabImport: TTabItem;
     tabSettings: TTabItem;
-    gestureMgr: TGestureManager;
-    pnlInput: TPanel;
-    lblScale: TLabel;
-    cbScale: TComboBox;
-    lblKey: TLabel;
-    cbKey: TComboBox;
-    btnGenerate: TButton;
-    pnlOutput: TPanel;
-    btnPlay: TButton;
-    lbResults: TListBox;
-    lbiNotes: TListBoxItem;
-    ghNotes: TListBoxGroupHeader;
-    ghIntervals: TListBoxGroupHeader;
-    lbiIntervals: TListBoxItem;
-    sbSettings: TVertScrollBox;
-    lblIntervalStyle: TLabel;
-    cbIntervalStyle: TComboBox;
-    lbiUKIntervalStyle: TListBoxItem;
-    lbiUSIntervalStyle: TListBoxItem;
-    lblKeyStyle: TLabel;
-    cbKeyStyle: TComboBox;
-    lbiKeyStyleC: TListBoxItem;
-    lbiKeyStyleA: TListBoxItem;
-    lblESName: TLabel;
+    pnlGenInput: TPanel;
+    lblGenScale: TLabel;
+    cbGenScale: TComboBox;
+    lblGenKey: TLabel;
+    cbGenKey: TComboBox;
+    btnGenGenerate: TButton;
+    pnlGenOutput: TPanel;
+    btnGenPlay: TButton;
+    lbGenResults: TListBox;
+    lbiGenNotes: TListBoxItem;
+    ghGenNotes: TListBoxGroupHeader;
+    ghGenIntervals: TListBoxGroupHeader;
+    lbiGenIntervals: TListBoxItem;
+    sbStgSettings: TVertScrollBox;
+    lblStgIntervalStyle: TLabel;
+    cbStgIntervalStyle: TComboBox;
+    lblESScale: TLabel;
     lblESScaleNumber: TLabel;
     lblESOr: TLabel;
     edESScaleNumber: TEdit;
@@ -60,12 +53,11 @@ type
     chkESInterval11: TCheckBox;
     chkESInterval12: TCheckBox;
     btnESAccept: TButton;
-    cbedESName: TComboEdit;
-    btnImportScales: TButton;
-    btnExportScales: TButton;
-    ListBox1: TListBox;
-    lblImportedScales: TLabel;
-    btnConfirmImport: TButton;
+    cbedESScale: TComboEdit;
+    btnImpImportScales: TButton;
+    lbImpImportedScales: TListBox;
+    lblImpImportedScales: TLabel;
+    btnImpConfirmImport: TButton;
     dlgExport: TSaveDialog;
     dlgImport: TOpenDialog;
     alMain: TActionList;
@@ -77,16 +69,26 @@ type
     actESNewScale: TAction;
     actESRenameScale: TAction;
     lblESCategory: TLabel;
-    cbESCategories: TComboBox;
     btnESEditCategories: TButton;
     actESEditCategories: TAction;
     btnESCancel: TButton;
     actESCancel: TAction;
     btnESDeleteScale: TButton;
     actESDeleteScale: TAction;
+    actGenGenerate: TAction;
+    actGenPlay: TAction;
+    actImpImportScales: TAction;
+    actImpConfirmImport: TAction;
+    lblStgScaleStyle: TLabel;
+    cbStgScaleStyle: TComboBox;
+    timerSettings: TTimer;
+    gestureMgr: TGestureManager;
+    ghGenScale: TListBoxGroupHeader;
+    lbiGenScale: TListBoxItem;
+    cbedESCategories: TComboEdit;
+    btnStgSave: TButton;
+    actStgSave: TAction;
     procedure FormCreate(Sender: TObject);
-    procedure FormGesture(Sender: TObject; const EventInfo: TGestureEventInfo;
-      var Handled: Boolean);
   private
     { Private declarations }
   public
@@ -103,28 +105,7 @@ implementation
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   { This defines the default active tab at runtime }
-  tcMain.ActiveTab := tabMain;
-end;
-
-procedure TMainForm.FormGesture(Sender: TObject;
-  const EventInfo: TGestureEventInfo; var Handled: Boolean);
-begin
-{$IFDEF ANDROID}
-  case EventInfo.GestureID of
-    sgiLeft:
-    begin
-      if tcMain.ActiveTab <> tcMain.Tabs[tcMain.TabCount-1] then
-        tcMain.ActiveTab := tcMain.Tabs[tcMain.TabIndex+1];
-      Handled := True;
-    end;
-    sgiRight:
-    begin
-      if tcMain.ActiveTab <> tcMain.Tabs[0] then
-        tcMain.ActiveTab := tcMain.Tabs[tcMain.TabIndex-1];
-      Handled := True;
-    end;
-  end;
-{$ENDIF}
+  tcMain.ActiveTab := tabGenerator;
 end;
 
 end.
