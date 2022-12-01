@@ -6,7 +6,7 @@
         <Projects Include="KeyNote.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Test\KeyNoteTests.dproj">
+        <Projects Include="..\tests\KeyNoteTests.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -27,13 +27,13 @@
         <MSBuild Projects="KeyNote.dproj" Targets="Make"/>
     </Target>
     <Target Name="KeyNoteTests">
-        <MSBuild Projects="Test\KeyNoteTests.dproj"/>
+        <MSBuild Projects="..\tests\KeyNoteTests.dproj"/>
     </Target>
     <Target Name="KeyNoteTests:Clean">
-        <MSBuild Projects="Test\KeyNoteTests.dproj" Targets="Clean"/>
+        <MSBuild Projects="..\tests\KeyNoteTests.dproj" Targets="Clean"/>
     </Target>
     <Target Name="KeyNoteTests:Make">
-        <MSBuild Projects="Test\KeyNoteTests.dproj" Targets="Make"/>
+        <MSBuild Projects="..\tests\KeyNoteTests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="KeyNote;KeyNoteTests"/>
