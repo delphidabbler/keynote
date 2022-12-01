@@ -12,7 +12,9 @@ uses
   DUnitX.Loggers.Console,
   DUnitX.Loggers.Xml.NUnit,
   {$ENDIF }
-  DUnitX.TestFramework;
+  DUnitX.TestFramework,
+  Test.Music.Notes in 'Test.Music.Notes.pas',
+  Music.Notes in '..\src\Music.Notes.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
