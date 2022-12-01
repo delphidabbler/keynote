@@ -13,8 +13,10 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   {$ENDIF }
   DUnitX.TestFramework,
+  Music.Notes in '..\src\Music.Notes.pas',
   Test.Music.Notes in 'Test.Music.Notes.pas',
-  Music.Notes in '..\src\Music.Notes.pas';
+  Core.Enumerators in '..\src\Core.Enumerators.pas',
+  Test.Core.Enumerators in 'Test.Core.Enumerators.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
