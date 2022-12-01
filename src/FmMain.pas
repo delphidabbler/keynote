@@ -98,9 +98,6 @@ var
 
 implementation
 
-uses
-  UMusic;
-
 {$R *.fmx}
 
 procedure TMainForm.FormCreate(Sender: TObject);
