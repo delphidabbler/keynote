@@ -4,7 +4,7 @@ object MainForm: TMainForm
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = Single
   Caption = 'KeyNote'
-  ClientHeight = 589
+  ClientHeight = 588
   ClientWidth = 384
   FormFactor.Width = 1440
   FormFactor.Height = 900
@@ -31,7 +31,7 @@ object MainForm: TMainForm
     Align = Client
     FullSize = True
     Size.Width = 384.000000000000000000
-    Size.Height = 541.000000000000000000
+    Size.Height = 540.000000000000000000
     Size.PlatformDefault = False
     TabHeight = 49.000000000000000000
     TabIndex = 0
@@ -39,13 +39,13 @@ object MainForm: TMainForm
     TabPosition = PlatformDefault
     Sizes = (
       384s
-      492s
+      491s
       384s
-      492s
+      491s
       384s
-      492s
+      491s
       384s
-      492s)
+      491s)
     object tabMain: TTabItem
       CustomIcon = <
         item
@@ -475,11 +475,11 @@ object MainForm: TMainForm
       object sbSettings: TVertScrollBox
         Align = Client
         Size.Width = 384.000000000000000000
-        Size.Height = 492.000000000000000000
+        Size.Height = 491.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
         Viewport.Width = 384.000000000000000000
-        Viewport.Height = 492.000000000000000000
+        Viewport.Height = 491.000000000000000000
         object cbIntervalStyle: TComboBox
           Position.X = 152.000000000000000000
           Position.Y = 24.000000000000000000
