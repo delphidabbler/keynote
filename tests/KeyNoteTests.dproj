@@ -62,6 +62,8 @@
         <DCCReference Include="Test.Music.Notes.pas"/>
         <DCCReference Include="..\src\Core.Enumerators.pas"/>
         <DCCReference Include="Test.Core.Enumerators.pas"/>
+        <DCCReference Include="..\src\Core.StringUtils.pas"/>
+        <DCCReference Include="Test.Core.StringUtils.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

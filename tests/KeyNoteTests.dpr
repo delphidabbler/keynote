@@ -16,7 +16,9 @@ uses
   Music.Notes in '..\src\Music.Notes.pas',
   Test.Music.Notes in 'Test.Music.Notes.pas',
   Core.Enumerators in '..\src\Core.Enumerators.pas',
-  Test.Core.Enumerators in 'Test.Core.Enumerators.pas';
+  Test.Core.Enumerators in 'Test.Core.Enumerators.pas',
+  Core.StringUtils in '..\src\Core.StringUtils.pas',
+  Test.Core.StringUtils in 'Test.Core.StringUtils.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
