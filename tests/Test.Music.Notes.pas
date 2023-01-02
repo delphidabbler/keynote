@@ -22,10 +22,13 @@ type
       C8 = 108;
       A4 = 69;
       Db5 = 73;
+      G4 = 67;
+      C1 = 24;
     var
       N0, N6, N7, N8, N42, N100, N100Dup, N127: TNote;
       NMinus1: TNote;
       NC0: TNote;
+      NC1: TNote;
       NC9: TNote;
       NG9: TNote;
       NBb7: TNote;
@@ -33,6 +36,7 @@ type
       NC8: TNote;
       NA4: TNote;
       NDb5: TNote;
+      NG4: TNote;
   public
     [Setup]
     procedure Setup;
@@ -82,12 +86,15 @@ type
     procedure GetFullName_sharp;
     [Test]
     procedure GetNameOf;
+    [Test]
+    procedure Frequency;
   end;
 
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  System.Math;
 
 { TTestNotes }
 
@@ -118,6 +125,19 @@ begin
   var N := TNote.Create(TNote.ConcertA);
   Assert.AreEqual(4, Integer(N.OctaveNumber), 'Octave');
   Assert.AreEqual(9, Integer(N.PitchClass), 'Offset');
+end;
+
+procedure TTestNotes.Frequency;
+begin
+  // Expected from varioua cross-checked online resources.
+  Assert.AreEqual(Double(12543.85), Double(NG9.Frequency), 0.01, 'G9');
+  Assert.AreEqual(Double(4186.01), Double(NC8.Frequency), 0.01, 'C8');
+  Assert.AreEqual(Double(440.00), Double(NA4.Frequency), 0.01, 'A4');
+  Assert.AreEqual(Double(554.37), Double(NDb5.Frequency), 0.01, 'Db5');
+  Assert.AreEqual(Double(392.00), Double(NG4.Frequency), 0.01, 'G4');
+  Assert.AreEqual(Double(32.70), Double(NC1.Frequency), 0.01, 'C1');
+  Assert.AreEqual(Double(16.35), Double(NC0.Frequency), 0.01, 'C0');
+  Assert.AreEqual(Double(8.18), Double(NMinus1.Frequency), 0.01, 'C-1');
 end;
 
 procedure TTestNotes.GetFullName_flat;
@@ -286,6 +306,7 @@ begin
 
   NMinus1 := TNote.Create(CMinus1);
   NC0 := TNote.Create(C0);
+  NC1 := TNote.Create(C1);
   NC9 := TNote.Create(C9);
   NG9 := TNote.Create(G9);
   NBb7:= TNote.Create(Bb7);
@@ -293,6 +314,7 @@ begin
   NC8 := TNote.Create(C8);
   NA4 := TNote.Create(A4);
   NDb5:= TNote.Create(Db5);
+  NG4 := TNote.Create(G4);
 end;
 
 procedure TTestNotes.TearDown;

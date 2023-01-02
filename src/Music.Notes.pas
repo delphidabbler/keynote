@@ -63,6 +63,8 @@ type
       fPitch: TNotePitch;
     function GetPitchClass: TPitchClass;
     function GetOctaveNumber: Int8;
+    function GetFrequency: Single;
+    function SemitonesFromConcertA: Int8; inline;
   public
     const
       /// <summary>Number of notes in an octave.</summary>
@@ -73,6 +75,8 @@ type
       MiddleC: TNotePitch = 60;
       ///  <summary>Pitch of concert A.</summary>
       ConcertA: TNotePitch = 69;
+      ///  <summary>Frequency of concert A.</summary>
+      ConcertAFrequency: Single = 440.0;
   public
     ///  <summary>Initantiates a new record for the given pitch.</summary>
     constructor Create(const APitch: TNotePitch);
@@ -90,6 +94,10 @@ type
     ///  <summary>Number of the octave containing the note.</summary>
     ///  <remarks>Octave numbering starts at <c>LowestOctave</c>.</remarks>
     property OctaveNumber: Int8 read GetOctaveNumber;
+
+    ///  <summary>Frequency of note.</summary>
+    ///  <remarks>Frequency is relative to concert A = 440Hz</remarks>
+    property Frequency: Single read GetFrequency;
 
     ///  <summary>Returns the name of a given note.</summary>
     ///  <param name="NaturalNote">Natural note number where 1=A through to 7=G.
@@ -123,7 +131,8 @@ type
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  System.Math;
 
 { TNote }
 
@@ -145,6 +154,16 @@ end;
 class operator TNote.Equal(const Left, Right: TNote): Boolean;
 begin
   Result := Left.fPitch = Right.fPitch;
+end;
+
+function TNote.GetFrequency: Single;
+begin
+  if fPitch = ConcertA then
+    // Shortcut calculation to get exact concert A frequency
+    Exit(ConcertAFrequency);
+  // Frequency calculation per https://newt.phys.unsw.edu.au/jw/notes.html
+  Result := Power(Single(2.0), Single(SemitonesFromConcertA / 12.0))
+    * ConcertAFrequency;
 end;
 
 function TNote.GetFullName(const UseSharps: Boolean): string;
@@ -243,6 +262,11 @@ end;
 class operator TNote.NotEqual(const Left, Right: TNote): Boolean;
 begin
   Result := Left.fPitch <> Right.fPitch;
+end;
+
+function TNote.SemitonesFromConcertA: Int8;
+begin
+  Result := fPitch - ConcertA;
 end;
 
 end.
