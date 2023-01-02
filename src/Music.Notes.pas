@@ -52,18 +52,21 @@ type
   ///  <remarks>1 = A through to 7 = G</remarks>
   TNaturalNoteNumber = 1..7;
 
+  ///  <summary>Pitch class of note.
+  TPitchClass = 0..11;
+
   // TODO: consider adding Length property to TNote
   ///  <summary>Encapsulation of a musical note.</summary>
   TNote = record
   strict private
     var
       fPitch: TNotePitch;
-    function GetOctaveOffset: Byte;
+    function GetPitchClass: TPitchClass;
     function GetOctaveNumber: Int8;
   public
     const
       /// <summary>Number of notes in an octave.</summary>
-      NotesPerOctave = 12;
+      NotesPerOctave = High(TPitchClass) - Low(TPitchClass) + 1;
       /// <summary>Number of lowest supported octave.</summary>
       LowestOctave = -1;
       ///  <summary>Pitch of middle C.</summary>
@@ -77,10 +80,12 @@ type
     ///  <summary>Pitch of the note.</summary>
     property Pitch: TNotePitch read fPitch;
 
-    ///  <summary>Offset of note within its octave.</summary>
-    ///  <remarks>Octaves start at C, with offset 0, and end at B with offset
-    ///  11.</remarks>
-    property OctaveOffset: Byte read GetOctaveOffset;
+    ///  <summary>Pitch class of note.</summary>
+    ///  <remarks>Pitch class of C is 0, and runs through to B with pitch class
+    ///  of 11. The pitch class of a note is effectively the number of semitones
+    ///  the note is from the closest C below it, except that the pitch class of
+    ///  C is always 0. See https://en.wikipedia.org/wiki/Pitch_class.</remarks>
+    property PitchClass: TPitchClass read GetPitchClass;
 
     ///  <summary>Number of the octave containing the note.</summary>
     ///  <remarks>Octave numbering starts at <c>LowestOctave</c>.</remarks>
@@ -170,18 +175,18 @@ const
   );
 begin
   var Oct := GetOctaveNumber;
-  var Offset := GetOctaveOffset;
+  var PitchClass := GetPitchClass;
   var Nat: TNaturalNoteNumber;
   var Acc: TAccidentals.TKind;
   if UseSharps then
   begin
-    Nat := OffsetToNatSharp[Offset];
-    Acc := OffsetToAccSharp[Offset];
+    Nat := OffsetToNatSharp[PitchClass];
+    Acc := OffsetToAccSharp[PitchClass];
   end
   else
   begin
-    Nat := OffsetToNatFlat[Offset];
-    Acc := OffsetToAccFlat[Offset];
+    Nat := OffsetToNatFlat[PitchClass];
+    Acc := OffsetToAccFlat[PitchClass];
   end;
   Result := GetNameOf(Nat, Acc) + Oct.ToString;
 end;
@@ -204,7 +209,7 @@ begin
   Result := (fPitch div NotesPerOctave) + LowestOctave;
 end;
 
-function TNote.GetOctaveOffset: Byte;
+function TNote.GetPitchClass: TPitchClass;
 begin
   Result := fPitch mod NotesPerOctave;
 end;

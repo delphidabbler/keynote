@@ -117,7 +117,7 @@ procedure TTestNotes.concert_A;
 begin
   var N := TNote.Create(TNote.ConcertA);
   Assert.AreEqual(4, Integer(N.OctaveNumber), 'Octave');
-  Assert.AreEqual(9, Integer(N.OctaveOffset), 'Offset');
+  Assert.AreEqual(9, Integer(N.PitchClass), 'Offset');
 end;
 
 procedure TTestNotes.GetFullName_flat;
@@ -162,7 +162,7 @@ procedure TTestNotes.middle_C;
 begin
   var N := TNote.Create(TNote.MiddleC);
   Assert.AreEqual(4, Integer(N.OctaveNumber), 'Octave');
-  Assert.AreEqual(0, Integer(N.OctaveOffset), 'Offset');
+  Assert.AreEqual(0, Integer(N.PitchClass), 'Offset');
 end;
 
 procedure TTestNotes.note_pitch_without_ctor_is_0;
@@ -197,15 +197,15 @@ end;
 
 procedure TTestNotes.OctaveOffset_is_correct;
 begin
-  Assert.AreEqual(0, Integer(NMinus1.OctaveOffset), 'C-1');
-  Assert.AreEqual(0, Integer(NC0.OctaveOffset), 'C0');
-  Assert.AreEqual(0, Integer(NC9.OctaveOffset), 'C9');
-  Assert.AreEqual(7, Integer(NG9.OctaveOffset), 'G9');
-  Assert.AreEqual(10, Integer(NBb7.OctaveOffset), 'Bb7');
-  Assert.AreEqual(11, Integer(NB7.OctaveOffset), 'B7');
-  Assert.AreEqual(0, Integer(NC8.OctaveOffset), 'C8');
-  Assert.AreEqual(9, Integer(NA4.OctaveOffset), 'A4');
-  Assert.AreEqual(1, Integer(NDb5.OctaveOffset), 'Db5');
+  Assert.AreEqual(0, Integer(NMinus1.PitchClass), 'C-1');
+  Assert.AreEqual(0, Integer(NC0.PitchClass), 'C0');
+  Assert.AreEqual(0, Integer(NC9.PitchClass), 'C9');
+  Assert.AreEqual(7, Integer(NG9.PitchClass), 'G9');
+  Assert.AreEqual(10, Integer(NBb7.PitchClass), 'Bb7');
+  Assert.AreEqual(11, Integer(NB7.PitchClass), 'B7');
+  Assert.AreEqual(0, Integer(NC8.PitchClass), 'C8');
+  Assert.AreEqual(9, Integer(NA4.PitchClass), 'A4');
+  Assert.AreEqual(1, Integer(NDb5.PitchClass), 'Db5');
 end;
 
 procedure TTestNotes.Operator_EQ_fails;
