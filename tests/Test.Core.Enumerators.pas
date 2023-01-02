@@ -13,7 +13,6 @@ type
   TTestEnumerators = class
   private
     var
-      N1, N2, N3: TNote;
       SA: TArray<string>;
       NA: TArray<TNote>;
       IA: TArray<Integer>;
