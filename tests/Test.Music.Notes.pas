@@ -10,6 +10,117 @@ uses
 type
 
   [TestFixture]
+  TTestNoteValues = class
+  private
+    NV1, NV1eq, NV2: TNoteValue;
+  public
+    [Setup]
+    procedure Setup;
+    [TearDown]
+    procedure TearDown;
+    [Test]
+    procedure default_ticks_property_is_crotchet;
+    [Test]
+    procedure assigning_non_zero_ticks_property_succeeds;
+    [Test]
+    procedure assigning_0_to_ticks_property_fails;
+    [Test]
+    procedure passing_non_zero_ticks_to_ctor_succeeds;
+    [Test]
+    procedure passing_0_to_ctor_fails;
+
+    [Test]
+    procedure Operator_EQ_succeeds;
+    [Test]
+    procedure Operator_EQ_fails;
+    [Test]
+    procedure Operator_NEQ_succeeds;
+    [Test]
+    procedure Operator_NEQ_fails;
+    [Test]
+    procedure Operator_LT_succeeds;
+    [Test]
+    procedure Operator_LT_fails;
+    [Test]
+    procedure Operator_LTE_succeeds;
+    [Test]
+    procedure Operator_LTE_fails;
+    [Test]
+    procedure Operator_GT_succeeds;
+    [Test]
+    procedure Operator_GT_fails;
+    [Test]
+    procedure Operator_GTE_succeeds;
+    [Test]
+    procedure Operator_GTE_fails;
+
+    [Test]
+    [TestCase('Maxima',    '32768')]    // Maxima     = 8*4096 ticks
+    [TestCase('8',         '8')]        // 1/512 note = 4096/512 ticks
+    [TestCase('Semibreve', '4096')]     // Semibreve  = 4096 ticks
+    [TestCase('Semiquaver','256')]      // Semiquaver = 4096/16 ticks
+    procedure DottedValueInTicks_is_noop_when_dots_is_0(Ticks: UInt16);
+
+    [Test]
+    // Expected ticks calculated from table at
+    // https://en.wikipedia.org/wiki/Note_value#List
+    // Maxima = 8*4096 ticks with 3 dots => 15 whole notes = 61400 ticks
+    [TestCase('Maxima, 3 dots', '32768,3,61440')]
+    // Semibreve = 4096 ticks with 1 dot => 3/2 whole notes = 6144 ticks
+    [TestCase('Semibreve, 1 dot', '4096,1,6144')]
+    // Semiquaver = 256 ticks with 2 dots => 7/64 whole notes = 448 ticks
+    [TestCase('Semiquaver, 2 dots', '256,2,448')]
+    // 1/512 note = 8 ticks with 3 dots => 15/4096 whole notes = 15 ticks
+    [TestCase('1/512 note, 3 dots', '8,3,15')]
+    procedure DottedValueInTicks_with_non_zero_dots(Ticks: UInt16;
+      Dots: TNoteValue.TDots; ExpectedTicks: UInt16);
+
+    [Test]
+    [TestCase('Ticks < 1/512 note, 2 dots','7,2')]
+    [TestCase('Ticks < 1/512 note, 1 dot','6,1')]
+    [TestCase('Ticks < 1/512 note, 3 dots','1,3')]
+    [TestCase('Ticks = 0, 3 dots','1,3')]
+    procedure DottedValueInTicks_with_bad_range_args_fails(BadTicks: UInt16;
+      Dots: TNoteValue.TDots);
+
+    [Test]
+    [TestCase('Ticks 28, dots 3', '28,3')]
+    [TestCase('Ticks 28, dots 2', '26,2')]
+    [TestCase('Ticks 29, dots 1', '26,2')]
+    procedure DottedValueInTicks_with_invalid_ticks_fails(BadTicks: UInt16;
+      Dots: TNoteValue.TDots);
+
+    [Test]
+    // Maxima = 8 * 4096 = 32768 ticks
+    [TestCase('Maxima', '8.0,32768')]
+    // Breve = 2 * 4096 = 8192 ticks
+    [TestCase('Breve', '2.0,8192')]
+    // Semibreve = 1 * 4096 = 4096 ticks
+    [TestCase('SemiBreve', '1.0,4096')]
+    // Minim = 1/2 * 4096 = 2048 ticks
+    [TestCase('Minim', '0.5,2048')]
+    // Demisemiquaver = 1/32 * 4096 = 128 ticks
+    [TestCase('Demisemiquaver', '0.03125,128')]
+    procedure Relative_prop(Expected: Double; Ticks: UInt16);
+
+    [Test]
+    // Crotchet = 1/4 * 4096 = 1024 ticks
+    [TestCase('Crotchet, 60CPM', '1000,1024,60')]
+    // Crotchet = 1/4 * 4096 = 1024 ticks
+    [TestCase('Crotchet, 120CPM', '500,1024,120')]
+    // Semibreve = 1 * 4096 = 4096 ticks
+    [TestCase('Semibreve, 120CPM', '2000,4096,120')]
+    // Semiquaver = 1/16 * 4096 = 256 ticks
+    [TestCase('Semiquaver, 100CPM', '150,256,100')]
+    // Semiquaver = 1/16 * 4096 = 256 ticks
+    [TestCase('Semiquaver, 145CPM', '103,256,145')]
+    // Demisemihemidemisemiquaver = 1/256 * 4096 = 16 ticks
+    [TestCase('Demisemihemidemisemiquaver, 90CPM', '10,16,90')]
+    procedure DurationMS(Expected: UInt32; Ticks: UInt16;
+      CrotchetsPerMin: UInt16);
+  end;
+
+  [TestFixture]
   TTestNotes = class
   private
     const
@@ -95,6 +206,189 @@ implementation
 uses
   System.SysUtils,
   System.Math;
+
+{ TTestNoteValues }
+
+procedure TTestNoteValues.assigning_0_to_ticks_property_fails;
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var N: TNoteValue;
+      N.Ticks := 0;
+    end,
+    EArgumentOutOfRangeException,
+    'N.Ticks := 0'
+  );
+end;
+
+procedure TTestNoteValues.assigning_non_zero_ticks_property_succeeds;
+begin
+  var N1, N2, N3, N4: TNoteValue;
+  N1.Ticks := TNoteValue.Maxima;
+  Assert.AreEqual(TNoteValue.Maxima, N1.Ticks, 'N1.Ticks = Maxima');
+  N2.Ticks := TNoteValue.Semiquaver;
+  Assert.AreEqual(TNoteValue.Semiquaver, N2.Ticks, 'N2.Ticks = Semiquaver');
+  N3.Ticks := 1;
+  Assert.AreEqual(1, N3.Ticks, 'N3.Ticks = 1');
+  N4.Ticks := High(UInt16);
+  Assert.AreEqual(High(UInt16), N4.Ticks, 'N4.Ticks = High(UInt16)');
+end;
+
+procedure TTestNoteValues.default_ticks_property_is_crotchet;
+begin
+  var N: TNoteValue;
+  Assert.AreEqual(TNoteValue.Crotchet, N.Ticks);
+end;
+
+procedure TTestNoteValues.DottedValueInTicks_is_noop_when_dots_is_0(
+  Ticks: UInt16);
+begin
+  Assert.AreEqual(Ticks, TNoteValue.DottedValueInTicks(Ticks, 0));
+end;
+
+procedure TTestNoteValues.DottedValueInTicks_with_bad_range_args_fails(
+  BadTicks: UInt16; Dots: TNoteValue.TDots);
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      TNoteValue.DottedValueInTicks(BadTicks, Dots)
+    end,
+    EArgumentOutOfRangeException,
+    'Ticks out of range'
+  );
+end;
+
+procedure TTestNoteValues.DottedValueInTicks_with_invalid_ticks_fails(
+  BadTicks: UInt16; Dots: TNoteValue.TDots);
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      TNoteValue.DottedValueInTicks(BadTicks, Dots);
+    end,
+    EArgumentException,
+    'Ticks not divisible by 2 ^ Dots'
+  );
+end;
+
+procedure TTestNoteValues.DottedValueInTicks_with_non_zero_dots(Ticks: UInt16;
+  Dots: TNoteValue.TDots; ExpectedTicks: UInt16);
+begin
+  Assert.AreEqual(ExpectedTicks, TNoteValue.DottedValueInTicks(Ticks, Dots));
+end;
+
+procedure TTestNoteValues.DurationMS(Expected: UInt32; Ticks,
+  CrotchetsPerMin: UInt16);
+begin
+  var NV := TNoteValue.Create(Ticks);
+  Assert.AreEqual(Expected, NV.DurationMS(CrotchetsPerMin));
+end;
+
+procedure TTestNoteValues.Operator_EQ_fails;
+begin
+  Assert.IsFalse(NV1 = NV2);
+end;
+
+procedure TTestNoteValues.Operator_EQ_succeeds;
+begin
+  Assert.IsTrue(NV1 = NV1eq);
+end;
+
+procedure TTestNoteValues.Operator_GTE_fails;
+begin
+  Assert.IsFalse(NV1 >= NV2);
+end;
+
+procedure TTestNoteValues.Operator_GTE_succeeds;
+begin
+  Assert.IsTrue(NV2 >= NV1, '>= | NV2 > NV1');
+  Assert.IsTrue(NV1 >= NV1eq, '>= | NV1 = NV1eq');
+end;
+
+procedure TTestNoteValues.Operator_GT_fails;
+begin
+  Assert.IsFalse(NV1 > NV2);
+end;
+
+procedure TTestNoteValues.Operator_GT_succeeds;
+begin
+  Assert.IsTrue(NV2 > NV1);
+end;
+
+procedure TTestNoteValues.Operator_LTE_fails;
+begin
+  Assert.IsFalse(NV2 <= NV1);
+end;
+
+procedure TTestNoteValues.Operator_LTE_succeeds;
+begin
+  Assert.IsTrue(NV1 < NV2, '<= | NV1 < NV2');
+  Assert.IsTrue(NV1 <= NV1eq, '<= | Nv1 = NV1eq');
+end;
+
+procedure TTestNoteValues.Operator_LT_fails;
+begin
+  Assert.IsFalse(NV2 < NV1);
+end;
+
+procedure TTestNoteValues.Operator_LT_succeeds;
+begin
+  Assert.IsTrue(NV1 < NV2);
+end;
+
+procedure TTestNoteValues.Operator_NEQ_fails;
+begin
+  Assert.IsFalse(NV1 <> NV1eq);
+end;
+
+procedure TTestNoteValues.Operator_NEQ_succeeds;
+begin
+  Assert.IsTrue(NV1 <> NV2);
+end;
+
+procedure TTestNoteValues.passing_0_to_ctor_fails;
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var N := TNoteValue.Create(0);
+    end,
+    EArgumentOutOfRangeException,
+    'ATicks = 0'
+  );
+end;
+
+procedure TTestNoteValues.passing_non_zero_ticks_to_ctor_succeeds;
+begin
+  var N1 := TNoteValue.Create(TNoteValue.Maxima);
+  Assert.AreEqual(TNoteValue.Maxima, N1.Ticks, 'Set N1 = Maxima');
+  var N2 := TNoteValue.Create(TNoteValue.Semiquaver);
+  Assert.AreEqual(TNoteValue.Semiquaver, N2.Ticks, 'Set N2 = Semiquaver');
+  var N3 := TNoteValue.Create(1);
+  Assert.AreEqual(1, N3.Ticks, 'Set N3 = 1');
+  var N4 := TNoteValue.Create(High(UInt16));
+  Assert.AreEqual(High(UInt16), N4.Ticks, 'Set N4 = High(UInt16)');
+end;
+
+procedure TTestNoteValues.Relative_prop(Expected: Double; Ticks: UInt16);
+begin
+  var NV := TNoteValue.Create(Ticks);
+  Assert.AreEqual(Expected, NV.RelativeValue, 0.001);
+end;
+
+procedure TTestNoteValues.Setup;
+begin
+  NV1 := TNoteValue.Create(TNoteValue.Crotchet);
+  NV1eq := TNoteValue.Create(TNoteValue.Crotchet);
+  NV2 := TNoteValue.Create(TNoteValue.Semibreve);
+end;
+
+procedure TTestNoteValues.TearDown;
+begin
+
+end;
 
 { TTestNotes }
 
@@ -323,6 +617,7 @@ end;
 
 initialization
 
+TDUnitX.RegisterTestFixture(TTestNoteValues);
 TDUnitX.RegisterTestFixture(TTestNotes);
 
 end.

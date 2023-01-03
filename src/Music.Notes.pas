@@ -39,6 +39,84 @@ type
       KeySymbols: array[TKeyKind] of string = ('', SharpSymbol, FlatSymbol);
   end;
 
+  ///  <summary>Encapsulates the relative duration of a note.</summary>
+  ///  <remarks>In music notation, a note value indicates the relative duration
+  ///  of a note (see https://en.wikipedia.org/wiki/Note_value).</remarks>
+  TNoteValue = record
+  strict private
+    const
+      TicksPerWholeNote = 4096;
+  public
+    const
+      // Names of note lengths
+      Maxima = 8 * TicksPerWholeNote;
+      DuplexLonga = Maxima;
+      OctupleWholeNote = DuplexLonga;
+      Longa = 4 * TicksPerWholeNote;
+      QuadrupleWholeNote = Longa;
+      Breve = 2 * TicksPerWholeNote;
+      DoubleWholeNote = Breve;
+      Semibreve = 1 * TicksPerWholeNote;
+      WholeNote = Semibreve;
+      Minim = TicksPerWholeNote div 2;
+      HalfNote = Minim;
+      Crotchet = TicksPerWholeNote div 4;
+      QuarterNote = Crotchet;
+      Quaver = TicksPerWholeNote div 8;
+      EighthNote = Quaver;
+      Semiquaver = TicksPerWholeNote div 16;
+      SixteenthNote = Semiquaver;
+      Demisemiquaver = TicksPerWholeNote div 32;
+      ThirtySecondNote = Demisemiquaver;
+      Hemidemisemiquaver = TicksPerWholeNote div 64;
+      SixtyFourthNote = Hemidemisemiquaver;
+      Semihemidemisemiquaver = TicksPerWholeNote div 128;
+      OnHundredAndTwentyEighthNote = Semihemidemisemiquaver;
+      Demisemihemidemisemiquaver = TicksPerWholeNote div 256;
+      TwoHundredAndFiftySixthNote = Demisemihemidemisemiquaver;
+    type
+      ///  <summary>Valid number of dot modifiers for use calculating dotted
+      ///  length of a note</summary>
+      TDots = 0..3;
+  strict private
+    var
+      fTicks: UInt16;
+    procedure SetTicks(ATicks: UInt16);
+    function GetRelativeValue: Double;
+  public
+    constructor Create(ATicks: UInt16);
+
+    ///  <summary>Note value expressed in ticks.</summary>
+    ///  <remarks>A tick 1/4096 of a semibreve (whole note). Initial value can
+    ///  be passed in constructor. Default value is Crotchet.
+    ///  </remarks>
+    property Ticks: UInt16 read fTicks write SetTicks;
+
+    ///  <summary>Note value expressed as a fraction or multiple of a semibreve
+    ///  (whole note).</summary>
+    property RelativeValue: Double read GetRelativeValue;
+
+    ///  <summary>Duration of note in milliseconds when played at the given
+    ///  number of crotchets per minute.</summary>
+    function DurationMS(CrotchetsPerMinute: UInt16): UInt32;
+
+    ///  <summary>Returns the augmented value of the given note after applying
+    ///  the given number of dot modifiers to the value.</summary>
+    ///  <exception>Exceptions are raised if ATicks is greater than
+    ///  <c>Maxima</c>, is smaller than a 1/512th note or is not divisible by
+    ///  2 ^ Dots.</exception>
+    class function DottedValueInTicks(ATicks: UInt16; Dots: TDots): UInt16;
+      static;
+
+    class operator Initialize(out Dest: TNoteValue);
+    class operator Equal(const Left, Right: TNoteValue): Boolean;
+    class operator NotEqual(const Left, Right: TNoteValue): Boolean;
+    class operator GreaterThan(const Left, Right: TNoteValue): Boolean;
+    class operator GreaterThanOrEqual(const Left, Right: TNoteValue): Boolean;
+    class operator LessThan(const Left, Right: TNoteValue): Boolean;
+    class operator LessThanOrEqual(const Left, Right: TNoteValue): Boolean;
+  end;
+
   ///  <summary>Valid MIDI note numbers.</summary>
   TMIDINote = 0..127;   // TODO: move to MIDI.UConsts unit?
 
@@ -133,6 +211,100 @@ implementation
 uses
   System.SysUtils,
   System.Math;
+
+{ TNoteValue }
+
+constructor TNoteValue.Create(ATicks: UInt16);
+begin
+  SetTicks(ATicks);
+end;
+
+class function TNoteValue.DottedValueInTicks(ATicks: UInt16; Dots: TDots):
+  UInt16;
+const
+  One512thNote = TicksPerWholeNote div 512;
+begin
+  var TwoToPowerOfDots := 1 shl Dots;
+
+  // Apply limits to ensure calculations in range and are not truncated
+  if (ATicks > Maxima) or (ATicks < One512thNote) then
+    raise EArgumentOutOfRangeException.CreateFmt(
+      'Value in ticks must be in range %d to %d to find dotted value',
+      [One512thNote, Maxima]
+    );
+  if ATicks mod TwoToPowerOfDots <> 0 then
+    raise EArgumentException.CreateFmt(
+      'Value in ticks must be divisible by 2 ^ %d', [Dots]
+    );
+
+  if Dots = 0 then
+    // No dots => no-op
+    Exit(ATicks);
+
+  // If n is number of dots then note value is increased by (2^n-1)/2^n
+  var Numerator: UInt16 := TwoToPowerOfDots - 1;
+  var Denominator: UInt16 := TwoToPowerOfDots;
+  Result := ATicks + ATicks div Denominator * Numerator;
+end;
+
+function TNoteValue.DurationMS(CrotchetsPerMinute: UInt16): UInt32;
+const
+  MSPerMinute = 60000;
+begin
+  var Numerator: UInt32 := MSPerMinute * fTicks;
+  var Denominator: UInt32 := CrotchetsPerMinute * Crotchet;
+  Result := Numerator div Denominator;
+end;
+
+class operator TNoteValue.Equal(const Left, Right: TNoteValue): Boolean;
+begin
+  Result := Left.fTicks = Right.fTicks;
+end;
+
+function TNoteValue.GetRelativeValue: Double;
+begin
+  Result := fTicks / TicksPerWholeNote;
+end;
+
+class operator TNoteValue.GreaterThan(const Left, Right: TNoteValue): Boolean;
+begin
+  Result := Left.fTicks > Right.fTicks;
+end;
+
+class operator TNoteValue.GreaterThanOrEqual(const Left, Right: TNoteValue):
+  Boolean;
+begin
+  Result := Left.fTicks >= Right.fTicks;
+end;
+
+class operator TNoteValue.Initialize(out Dest: TNoteValue);
+begin
+  // Default note Ticks is crochet
+  Dest.fTicks := Crotchet;
+end;
+
+class operator TNoteValue.LessThan(const Left, Right: TNoteValue): Boolean;
+begin
+  Result := Left.fTicks < Right.fTicks;
+end;
+
+class operator TNoteValue.LessThanOrEqual(const Left, Right: TNoteValue):
+  Boolean;
+begin
+  Result := Left.fTicks <= Right.fTicks;
+end;
+
+class operator TNoteValue.NotEqual(const Left, Right: TNoteValue): Boolean;
+begin
+  Result := Left.fTicks <> Right.fTicks;
+end;
+
+procedure TNoteValue.SetTicks(ATicks: UInt16);
+begin
+  if ATicks = 0 then
+    raise EArgumentOutOfRangeException.Create('A note value must be positive');
+  fTicks := ATicks;
+end;
 
 { TNote }
 
@@ -270,5 +442,4 @@ begin
 end;
 
 end.
-
 
