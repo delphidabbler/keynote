@@ -176,7 +176,7 @@ type
     [Test]
     procedure OctaveNumber_is_correct;
     [Test]
-    procedure OctaveOffset_is_correct;
+    procedure PitchClass_is_correct;
     [Test]
     procedure Operator_EQ_succeeds;
     [Test]
@@ -529,19 +529,6 @@ begin
   Assert.AreEqual(5, Integer(Db_5.OctaveNumber), 'Db5');
 end;
 
-procedure TTestNotes.OctaveOffset_is_correct;
-begin
-  Assert.AreEqual(0, Integer(C_neg1.PitchClass), 'C-1');
-  Assert.AreEqual(0, Integer(C_0.PitchClass), 'C0');
-  Assert.AreEqual(0, Integer(C_9.PitchClass), 'C9');
-  Assert.AreEqual(7, Integer(G_9.PitchClass), 'G9');
-  Assert.AreEqual(10, Integer(Bb_7.PitchClass), 'Bb7');
-  Assert.AreEqual(11, Integer(B_7.PitchClass), 'B7');
-  Assert.AreEqual(0, Integer(C_8.PitchClass), 'C8');
-  Assert.AreEqual(9, Integer(A_4.PitchClass), 'A4');
-  Assert.AreEqual(1, Integer(Db_5.PitchClass), 'Db5');
-end;
-
 procedure TTestNotes.Operator_EQ_fails;
 begin
   Assert.IsFalse(Ab_neg1 = E_7);
@@ -605,6 +592,19 @@ procedure TTestNotes.Operator_NEQ_succeeds;
 begin
   Assert.IsTrue(Ab_neg1 <> G_neg1, '-52 <> -53');
   Assert.IsTrue(G_neg1 <> Ab_neg1, '-53 <> -52');
+end;
+
+procedure TTestNotes.PitchClass_is_correct;
+begin
+  Assert.AreEqual(0, Integer(C_neg1.PitchClass), 'C-1');
+  Assert.AreEqual(0, Integer(C_0.PitchClass), 'C0');
+  Assert.AreEqual(0, Integer(C_9.PitchClass), 'C9');
+  Assert.AreEqual(7, Integer(G_9.PitchClass), 'G9');
+  Assert.AreEqual(10, Integer(Bb_7.PitchClass), 'Bb7');
+  Assert.AreEqual(11, Integer(B_7.PitchClass), 'B7');
+  Assert.AreEqual(0, Integer(C_8.PitchClass), 'C8');
+  Assert.AreEqual(9, Integer(A_4.PitchClass), 'A4');
+  Assert.AreEqual(1, Integer(Db_5.PitchClass), 'Db5');
 end;
 
 procedure TTestNotes.Setup;
