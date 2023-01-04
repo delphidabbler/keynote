@@ -5,6 +5,9 @@ unit Music.Notes;
 
 interface
 
+uses
+  System.Types;
+
 type
 
   ///  <summary>Encapsulation of various accidentals.</summary>
@@ -108,6 +111,13 @@ type
     class function DottedValueInTicks(ATicks: UInt16; Dots: TDots): UInt16;
       static;
 
+    ///  <summary>Compares two TNoteValue records.</summary>
+    ///  <remarks>Comparison is based on the natural ordering of the Ticks
+    ///  property, so that longer notes are considered to be greater than than
+    ///  shorter notes.</remarks>
+    class function Compare(const Left, Right: TNoteValue): TValueRelationship;
+      static;
+
     class operator Initialize(out Dest: TNoteValue);
     class operator Equal(const Left, Right: TNoteValue): Boolean;
     class operator NotEqual(const Left, Right: TNoteValue): Boolean;
@@ -135,12 +145,12 @@ type
   ///  <summary>Pitch class of note.
   TPitchClass = 0..11;
 
-  // TODO: consider adding Length property to TNote
   ///  <summary>Encapsulation of a musical note.</summary>
   TNote = record
   strict private
     var
       fPitch: TNotePitch;
+      fValue: TNoteValue;
     function GetPitchClass: TPitchClass;
     function GetOctaveNumber: Int8;
     function GetFrequency: Single;
@@ -159,8 +169,14 @@ type
       ///  <summary>Frequency of concert A.</summary>
       ConcertAFrequency: Single = 440.0;
   public
-    ///  <summary>Initantiates a new record for the given pitch.</summary>
-    constructor Create(const APitch: TNotePitch);
+    ///  <summary>Instantiates a new record for the given pitch, with default
+    ///  note value.</summary>
+    constructor Create(const APitch: TNotePitch); overload;
+
+    ///  <summary>Instantiates a new record for the note pitch and value.
+    ///  </summary>
+    constructor Create(const APitch: TNotePitch; const AValue: TNoteValue);
+      overload;
 
     ///  <summary>Pitch of the note.</summary>
     property Pitch: TNotePitch read fPitch;
@@ -179,6 +195,9 @@ type
     ///  <summary>Frequency of note.</summary>
     ///  <remarks>Frequency is relative to concert A = 440Hz</remarks>
     property Frequency: Single read GetFrequency;
+
+    ///  <summary>Value (i.e. length) of note.</summary>
+    property Value: TNoteValue read fValue write fValue;
 
     ///  <summary>Returns the name of a given note.</summary>
     ///  <param name="NaturalNote">Natural note number where 1=A through to 7=G.
@@ -200,6 +219,30 @@ type
     ///  <returns>string. Full note name.</returns>
     function GetFullName(const UseSharps: Boolean): string;
 
+    ///  <summary>Compares two notes and returns a value indicating their
+    ///  respective ordering.</summary>
+    ///  <remarks>The pitch of a note is considered higher priority than the
+    ///  note value (length). A note with a higher pitch is considered greater
+    ///  than a note with a lower pitch, regardless of length. Where pitches are
+    ///  equal the the note values are compared and notes with larger values
+    ///  (longer notes) are considered greater than shorter notes.</remarks>
+    class function Compare(const Left, Right: TNote): TValueRelationship;
+      static;
+
+    ///  <summary>Compares the pitch of two notes and returns a value indicating
+    ///  their respective ordering.</summary>
+    ///  <remarks>Notes with higher pitch are considered greater than notes with
+    ///  lower pitch.</remarks>
+    class function ComparePitch(const Left, Right: TNote): TValueRelationship;
+      static;
+
+    ///  <summary>Compares the value of two notes and returns a value indicating
+    ///  their respective ordering.</summary>
+    ///  <remarks>Longer notes are considered greater than shorter notes.
+    ///  </remarks>
+    class function CompareValue(const Left, Right: TNote): TValueRelationship;
+      static;
+
     class operator Initialize(out Dest: TNote);
     class operator Equal(const Left, Right: TNote): Boolean;
     class operator NotEqual(const Left, Right: TNote): Boolean;
@@ -216,6 +259,17 @@ uses
   System.Math;
 
 { TNoteValue }
+
+class function TNoteValue.Compare(const Left, Right: TNoteValue):
+  TValueRelationship;
+begin
+  if Left.fTicks = Right.fTicks then
+    Result := EqualsValue
+  else if Left.fTicks < Right.fTicks then
+    Result := LessThanValue
+  else
+    Result := GreaterThanValue
+end;
 
 constructor TNoteValue.Create(ATicks: UInt16);
 begin
@@ -261,7 +315,7 @@ end;
 
 class operator TNoteValue.Equal(const Left, Right: TNoteValue): Boolean;
 begin
-  Result := Left.fTicks = Right.fTicks;
+  Result := Compare(Left, Right) = EqualsValue;
 end;
 
 function TNoteValue.GetRelativeValue: Double;
@@ -271,13 +325,13 @@ end;
 
 class operator TNoteValue.GreaterThan(const Left, Right: TNoteValue): Boolean;
 begin
-  Result := Left.fTicks > Right.fTicks;
+  Result := Compare(Left, Right) = GreaterThanValue;
 end;
 
 class operator TNoteValue.GreaterThanOrEqual(const Left, Right: TNoteValue):
   Boolean;
 begin
-  Result := Left.fTicks >= Right.fTicks;
+  Result := Compare(Left, Right) <> LessThanValue;
 end;
 
 class operator TNoteValue.Initialize(out Dest: TNoteValue);
@@ -288,18 +342,18 @@ end;
 
 class operator TNoteValue.LessThan(const Left, Right: TNoteValue): Boolean;
 begin
-  Result := Left.fTicks < Right.fTicks;
+  Result := Compare(Left, Right) = LessThanValue;
 end;
 
 class operator TNoteValue.LessThanOrEqual(const Left, Right: TNoteValue):
   Boolean;
 begin
-  Result := Left.fTicks <= Right.fTicks;
+  Result := Compare(Left, Right) <> GreaterThanValue;
 end;
 
 class operator TNoteValue.NotEqual(const Left, Right: TNoteValue): Boolean;
 begin
-  Result := Left.fTicks <> Right.fTicks;
+  Result := Compare(Left, Right) <> EqualsValue;
 end;
 
 procedure TNoteValue.SetTicks(ATicks: UInt16);
@@ -326,9 +380,39 @@ begin
   fPitch := APitch;
 end;
 
+class function TNote.Compare(const Left, Right: TNote): TValueRelationship;
+begin
+  var PitchComparison := ComparePitch(Left, Right);
+  if PitchComparison = EqualsValue then
+    Result := CompareValue(Left, Right)
+  else
+    Result := PitchComparison;
+end;
+
+class function TNote.ComparePitch(const Left, Right: TNote): TValueRelationship;
+begin
+  if Left.Pitch = Right.Pitch then
+    Result := EqualsValue
+  else if Left.Pitch < Right.Pitch then
+    Result := LessThanValue
+  else
+    Result := GreaterThanValue;
+end;
+
+class function TNote.CompareValue(const Left, Right: TNote): TValueRelationship;
+begin
+  Result := TNoteValue.Compare(Left.Value, Right.Value);
+end;
+
+constructor TNote.Create(const APitch: TNotePitch; const AValue: TNoteValue);
+begin
+  Create(APitch);
+  fValue := AValue;
+end;
+
 class operator TNote.Equal(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch = Right.fPitch;
+  Result := Compare(Left, Right) = EqualsValue;
 end;
 
 function TNote.GetFrequency: Single;
@@ -410,33 +494,34 @@ end;
 
 class operator TNote.GreaterThan(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch > Right.fPitch;
+  Result := Compare(Left, Right) = GreaterThanValue;
 end;
 
 class operator TNote.GreaterThanOrEqual(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch >= Right.fPitch;
+  Result := Compare(Left, Right) <> LessThanValue;
 end;
 
 class operator TNote.Initialize(out Dest: TNote);
 begin
   // Initialise pitch to middle C)
   Dest.fPitch := MiddleC;
+  // Dest.fValue will be automatically set to crotchet by TNoteValue.Initialize
 end;
 
 class operator TNote.LessThan(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch < Right.fPitch;
+  Result := Compare(Left, Right) = LessThanValue;
 end;
 
 class operator TNote.LessThanOrEqual(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch <= Right.fPitch;
+  Result := Compare(Left, Right) <> GreaterThanValue;
 end;
 
 class operator TNote.NotEqual(const Left, Right: TNote): Boolean;
 begin
-  Result := Left.fPitch <> Right.fPitch;
+  Result := Compare(Left, Right) <> EqualsValue;
 end;
 
 function TNote.SemitonesFromConcertA: Int8;

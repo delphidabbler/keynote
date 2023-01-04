@@ -3,6 +3,8 @@ unit Test.Music.Notes;
 interface
 
 uses
+  System.Types,
+
   DUnitX.TestFramework,
 
   Music.Notes;
@@ -28,6 +30,12 @@ type
     procedure passing_non_zero_ticks_to_ctor_succeeds;
     [Test]
     procedure passing_0_to_ctor_fails;
+
+    [Test]
+    [TestCase('A=B','0,4096,4096')]
+    [TestCase('A<B','-1,1024,4096')]
+    [TestCase('A>B','1,1024,512')]
+    procedure Compare(const Expected: TValueRelationship; Left, Right: UInt16);
 
     [Test]
     procedure Operator_EQ_succeeds;
@@ -172,7 +180,42 @@ type
     [Test]
     procedure note_pitch_with_ctor_is_correct;
     [Test]
+    procedure note_value_without_ctor_is_crotchet;
+    [Test]
+    procedure note_value_with_pitch_but_no_value_is_crotchet;
+    [Test]
+    procedure note_value_with_ctor_is_correct;
+    [Test]
     procedure bad_note_pitch_in_ctor_fails_assertion;
+
+    [Test]
+    [TestCase('A=B','0,10,10')]
+    [TestCase('A<B','-1,-24,68')]
+    [TestCase('A>B','1,0,-1')]
+    procedure ComparePitch(Expected: TValueRelationship;
+      LeftPitch, RightPitch: TNotePitch);
+
+    [Test]
+    [TestCase('A=B','0,4096,4096')]
+    [TestCase('A<B','-1,1024,4096')]
+    [TestCase('A>B','1,1024,512')]
+    procedure CompareValue(const Expected: TValueRelationship;
+      LeftValue, RightValue: UInt16);
+
+    [Test]
+    [TestCase('P1=P2, V1=V2', '0,10,10,4096,4096')]
+    [TestCase('P1=P2, V1<V2', '-1,10,10,1024,4096')]
+    [TestCase('P1=P2, V1>V2', '1,10,10,1024,512')]
+    [TestCase('P1<P2, V1=V2', '-1,-24,68,512,512,')]
+    [TestCase('P1<P2, V1<V2', '-1,-24,68,256,512')]
+    [TestCase('P1<P2, V1>V2', '-1,-24,68,512,256')]
+    [TestCase('P1>P2, V1=V2', '1,0,-1,4096,4096')]
+    [TestCase('P1>P2, V1<V2', '1,0,-1,256,512')]
+    [TestCase('P1>P2, V1>V2', '1,0,-1,256,64')]
+    procedure Compare(const Expected: TValueRelationship;
+      LeftPitch, RightPitch: TNotePitch; LeftValue, RightValue: UInt16);
+    [Test]
+    procedure Value_prop_is_correct;
     [Test]
     procedure OctaveNumber_is_correct;
     [Test]
@@ -247,6 +290,14 @@ begin
   Assert.AreEqual(1, N3.Ticks, 'N3.Ticks = 1');
   N4.Ticks := High(UInt16);
   Assert.AreEqual(High(UInt16), N4.Ticks, 'N4.Ticks = High(UInt16)');
+end;
+
+procedure TTestNoteValues.Compare(const Expected: TValueRelationship; Left,
+  Right: UInt16);
+begin
+  var L := TNoteValue.Create(Left);
+  var R := TNoteValue.Create(Right);
+  Assert.AreEqual(Expected, TNoteValue.Compare(L, R));
 end;
 
 procedure TTestNoteValues.default_ticks_property_is_crotchet;
@@ -428,6 +479,32 @@ begin
   );
 end;
 
+procedure TTestNotes.Compare(const Expected: TValueRelationship; LeftPitch,
+  RightPitch: TNotePitch; LeftValue, RightValue: UInt16);
+begin
+  var L := TNote.Create(LeftPitch, TNoteValue.Create(LeftValue));
+  var R := TNote.Create(RightPitch, TNoteValue.Create(RightValue));
+  Assert.AreEqual(Expected, TNote.Compare(L, R));
+end;
+
+procedure TTestNotes.ComparePitch(Expected: TValueRelationship; LeftPitch,
+  RightPitch: TNotePitch);
+begin
+  // Note: ComparePitch should ignore note value
+  var L := TNote.Create(LeftPitch, TNoteValue.Create(TNoteValue.Semibreve));
+  var R := TNote.Create(RightPitch, TNoteValue.Create(TNoteValue.Semiquaver));
+  Assert.AreEqual(Expected, TNote.ComparePitch(L, R));
+end;
+
+procedure TTestNotes.CompareValue(const Expected: TValueRelationship; LeftValue,
+  RightValue: UInt16);
+begin
+  // Note CompareValue should ignore note pitch
+  var L := TNote.Create(A_4_pitch, TNoteValue.Create(LeftValue));
+  var R := TNote.Create(C_1_pitch, TNoteValue.Create(RightValue));
+  Assert.AreEqual(Expected, TNote.CompareValue(L, R));
+end;
+
 procedure TTestNotes.concert_A;
 begin
   var N := TNote.Create(TNote.ConcertA);
@@ -514,6 +591,26 @@ begin
   Assert.AreEqual(40, Integer(E_7.Pitch), 'E7');
   Assert.AreEqual(67, Integer(G_9.Pitch), 'G9');
   Assert.AreEqual(68, Integer(Ab_9.Pitch), 'Ab9');
+end;
+
+procedure TTestNotes.note_value_without_ctor_is_crotchet;
+begin
+  var N: TNote;
+  Assert.AreEqual(TNoteValue.Crotchet, N.Value.Ticks);
+end;
+
+procedure TTestNotes.note_value_with_ctor_is_correct;
+begin
+  var NBreve := TNote.Create(A_4_pitch, TNoteValue.Create(TNoteValue.Breve));
+  Assert.AreEqual(TNoteValue.Breve, NBreve.Value.Ticks);
+  var NSemiquaver := TNote.Create(A_4_pitch, TNoteValue.Create(TNoteValue.Semiquaver));
+  Assert.AreEqual(TNoteValue.Semiquaver, NSemiquaver.Value.Ticks);
+end;
+
+procedure TTestNotes.note_value_with_pitch_but_no_value_is_crotchet;
+begin
+  var N := TNote.Create(A_4_pitch);
+  Assert.AreEqual(TNoteValue.Crotchet, N.Value.Ticks);
 end;
 
 procedure TTestNotes.OctaveNumber_is_correct;
@@ -632,6 +729,15 @@ end;
 
 procedure TTestNotes.TearDown;
 begin
+end;
+
+procedure TTestNotes.Value_prop_is_correct;
+begin
+  var N := TNote.Create(A_4_pitch);
+  N.Value := TNoteValue.Create(TNoteValue.Breve);
+  Assert.AreEqual(TNoteValue.Breve, N.Value.Ticks);
+  N.Value := TNoteValue.Create(TNoteValue.Semiquaver);
+  Assert.AreEqual(TNoteValue.Semiquaver, N.Value.Ticks);
 end;
 
 initialization
