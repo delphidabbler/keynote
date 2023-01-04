@@ -124,37 +124,51 @@ type
   TTestNotes = class
   private
     const
-      CMinus1 = 0;
-      C0 = 12;
-      C9 = 120;
-      G9 = 127;
-      Bb7 = 106;
-      B7 = 107;
-      C8 = 108;
-      A4 = 69;
-      Db5 = 73;
-      G4 = 67;
-      C1 = 24;
+      C_neg1_pitch = -60;
+      Gb_neg1_pitch = -54;
+      G_neg1_pitch = -53;
+      Ab_neg1_pitch = -52;
+      C_0_pitch = -48;
+      C_1_pitch = -36;
+      Gb_2_pitch = -18;
+      C_4_pitch = 0;     // middle C
+      G_4_pitch = 7;
+      A_4_pitch = 9;     // concert pitch
+      Db_5_pitch = 13;
+      E_7_pitch = 40;
+      Bb_7_pitch = 46;
+      B_7_pitch = 47;
+      C_8_pitch = 48;
+      C_9_pitch = 60;
+      G_9_pitch = 67;
+      Ab_9_pitch = 68;
     var
-      N0, N6, N7, N8, N42, N100, N100Dup, N127: TNote;
-      NMinus1: TNote;
-      NC0: TNote;
-      NC1: TNote;
-      NC9: TNote;
-      NG9: TNote;
-      NBb7: TNote;
-      NB7: TNote;
-      NC8: TNote;
-      NA4: TNote;
-      NDb5: TNote;
-      NG4: TNote;
+      C_neg1: TNote;
+      Gb_neg1: TNote;
+      G_neg1: TNote;
+      Ab_neg1: TNote;
+      C_0: TNote;
+      C_1: TNote;
+      Gb_2: TNote;
+      C_4: TNote;
+      G_4: TNote;
+      A_4: TNote;
+      Db_5: TNote;
+      E_7: TNote;
+      E_7_dup: TNote;
+      Bb_7: TNote;
+      B_7: TNote;
+      C_8: TNote;
+      C_9: TNote;
+      G_9: TNote;
+      Ab_9: TNote;
   public
     [Setup]
     procedure Setup;
     [TearDown]
     procedure TearDown;
     [Test]
-    procedure note_pitch_without_ctor_is_0;
+    procedure note_pitch_without_ctor_is_middle_c;
     [Test]
     procedure note_pitch_with_ctor_is_correct;
     [Test]
@@ -397,20 +411,20 @@ begin
   Assert.WillRaise(
     procedure
     begin
-      var I := -1;
+      var I := Pred(Low(TNotePitch));
       var N := TNote.Create(I);
     end,
     EAssertionFailed,
-    'int < 0'
+    'pitch below low bounds'
   );
   Assert.WillRaise(
     procedure
     begin
-      var I := 128;
+      var I := Succ(High(TNotePitch));
       var N := TNote.Create(I);
     end,
     EAssertionFailed,
-    'int > 127'
+    'pitch above high bounds'
   );
 end;
 
@@ -424,30 +438,35 @@ end;
 procedure TTestNotes.Frequency;
 begin
   // Expected from varioua cross-checked online resources.
-  Assert.AreEqual(Double(12543.85), Double(NG9.Frequency), 0.01, 'G9');
-  Assert.AreEqual(Double(4186.01), Double(NC8.Frequency), 0.01, 'C8');
-  Assert.AreEqual(Double(440.00), Double(NA4.Frequency), 0.01, 'A4');
-  Assert.AreEqual(Double(554.37), Double(NDb5.Frequency), 0.01, 'Db5');
-  Assert.AreEqual(Double(392.00), Double(NG4.Frequency), 0.01, 'G4');
-  Assert.AreEqual(Double(32.70), Double(NC1.Frequency), 0.01, 'C1');
-  Assert.AreEqual(Double(16.35), Double(NC0.Frequency), 0.01, 'C0');
-  Assert.AreEqual(Double(8.18), Double(NMinus1.Frequency), 0.01, 'C-1');
+  Assert.AreEqual(Double(13289.75), Double(Ab_9.Frequency), 0.01, 'Ab9');
+  Assert.AreEqual(Double(12543.85), Double(G_9.Frequency), 0.01, 'G9');
+  Assert.AreEqual(Double(4186.01), Double(C_8.Frequency), 0.01, 'C8');
+  Assert.AreEqual(Double(440.00), Double(A_4.Frequency), 0.01, 'A4 (poncert)');
+  Assert.AreEqual(Double(554.37), Double(Db_5.Frequency), 0.01, 'Db5');
+  Assert.AreEqual(Double(392.00), Double(G_4.Frequency), 0.01, 'G4');
+  Assert.AreEqual(Double(261.63), Double(C_4.Frequency), 0.01, 'C4 (middle C)');
+  Assert.AreEqual(Double(32.70), Double(C_1.Frequency), 0.01, 'C1');
+  Assert.AreEqual(Double(16.35), Double(C_0.Frequency), 0.01, 'C0');
+  Assert.AreEqual(Double(8.18), Double(C_neg1.Frequency), 0.01, 'C-1');
 end;
 
 procedure TTestNotes.GetFullName_flat;
 begin
-  Assert.AreEqual('C-1', NMinus1.GetFullName(False), 'C-1');
-  Assert.AreEqual('A4', NA4.GetFullName(False), 'A4');
-  Assert.AreEqual('B'#$266D'7', NBb7.GetFullName(False), 'Bb7');
-  Assert.AreEqual('D'#$266D'5', NDb5.GetFullName(False), 'Db7');
+  Assert.AreEqual('C-1', C_neg1.GetFullName(False), 'C-1');
+  Assert.AreEqual('A4', A_4.GetFullName(False), 'A4');
+  Assert.AreEqual('C4', C_4.GetFullName(False), 'C4 (middle C)');
+  Assert.AreEqual('B'#$266D'7', Bb_7.GetFullName(False), 'Bb7');
+  Assert.AreEqual('D'#$266D'5', Db_5.GetFullName(False), 'Db7');
+  Assert.AreEqual('A'#$266D'9', Ab_9.GetFullName(False), 'Ab9');
 end;
 
 procedure TTestNotes.GetFullName_sharp;
 begin
-  Assert.AreEqual('C-1', NMinus1.GetFullName(True), 'C-1');
-  Assert.AreEqual('A4', NA4.GetFullName(True), 'A4');
-  Assert.AreEqual('A'#$266F'7', NBb7.GetFullName(True), 'A#7');
-  Assert.AreEqual('C'#$266F'5', NDb5.GetFullName(True), 'C#5');
+  Assert.AreEqual('C-1', C_neg1.GetFullName(True), 'C-1');
+  Assert.AreEqual('A4', A_4.GetFullName(True), 'A4');
+  Assert.AreEqual('A'#$266F'7', Bb_7.GetFullName(True), 'A#7');
+  Assert.AreEqual('C'#$266F'5', Db_5.GetFullName(True), 'C#5');
+  Assert.AreEqual('G'#$266F'9', Ab_9.GetFullName(True), 'G#9');
 end;
 
 procedure TTestNotes.GetNameOf;
@@ -479,136 +498,136 @@ begin
   Assert.AreEqual(0, Integer(N.PitchClass), 'Offset');
 end;
 
-procedure TTestNotes.note_pitch_without_ctor_is_0;
+procedure TTestNotes.note_pitch_without_ctor_is_middle_c;
 begin
   var N: TNote;
-  Assert.AreEqual(0, Integer(N.Pitch));
+  Assert.AreEqual(Integer(TNote.MiddleC), Integer(N.Pitch));
 end;
 
 procedure TTestNotes.note_pitch_with_ctor_is_correct;
 begin
-  Assert.AreEqual(0, Integer(N0.Pitch), 'N0');
-  Assert.AreEqual(6, Integer(N6.Pitch), 'N6');
-  Assert.AreEqual(7, Integer(N7.Pitch), 'N7');
-  Assert.AreEqual(8, Integer(N8.Pitch), 'N8');
-  Assert.AreEqual(42, Integer(N42.Pitch), 'N42');
-  Assert.AreEqual(100, Integer(N100.Pitch), 'N100');
-  Assert.AreEqual(127, Integer(N127.Pitch), 'N127');
+  Assert.AreEqual(-60, Integer(C_neg1.Pitch), 'C-1');
+  Assert.AreEqual(-54, Integer(Gb_neg1.Pitch), 'Gb-1');
+  Assert.AreEqual(-53, Integer(G_neg1.Pitch), 'G-1');
+  Assert.AreEqual(-52, Integer(Ab_neg1.Pitch), 'Ab-1');
+  Assert.AreEqual(-18, Integer(Gb_2.Pitch), 'Gb2');
+  Assert.AreEqual(40, Integer(E_7.Pitch), 'E7');
+  Assert.AreEqual(67, Integer(G_9.Pitch), 'G9');
+  Assert.AreEqual(68, Integer(Ab_9.Pitch), 'Ab9');
 end;
 
 procedure TTestNotes.OctaveNumber_is_correct;
 begin
-  Assert.AreEqual(-1, NMinus1.OctaveNumber, 'C-1');
-  Assert.AreEqual(0, Integer(NC0.OctaveNumber), 'C0');
-  Assert.AreEqual(9, Integer(NC9.OctaveNumber), 'C9');
-  Assert.AreEqual(9, Integer(NG9.OctaveNumber), 'G9');
-  Assert.AreEqual(7, Integer(NBb7.OctaveNumber), 'Bb7');
-  Assert.AreEqual(7, Integer(NB7.OctaveNumber), 'B7');
-  Assert.AreEqual(8, Integer(NC8.OctaveNumber), 'C8');
-  Assert.AreEqual(4, Integer(NA4.OctaveNumber), 'A4');
-  Assert.AreEqual(5, Integer(NDb5.OctaveNumber), 'Db5');
+  Assert.AreEqual(-1, C_neg1.OctaveNumber, 'C-1');
+  Assert.AreEqual(0, Integer(C_0.OctaveNumber), 'C0');
+  Assert.AreEqual(9, Integer(C_9.OctaveNumber), 'C9');
+  Assert.AreEqual(9, Integer(G_9.OctaveNumber), 'G9');
+  Assert.AreEqual(7, Integer(Bb_7.OctaveNumber), 'Bb7');
+  Assert.AreEqual(7, Integer(B_7.OctaveNumber), 'B7');
+  Assert.AreEqual(8, Integer(C_8.OctaveNumber), 'C8');
+  Assert.AreEqual(4, Integer(A_4.OctaveNumber), 'A4');
+  Assert.AreEqual(5, Integer(Db_5.OctaveNumber), 'Db5');
 end;
 
 procedure TTestNotes.OctaveOffset_is_correct;
 begin
-  Assert.AreEqual(0, Integer(NMinus1.PitchClass), 'C-1');
-  Assert.AreEqual(0, Integer(NC0.PitchClass), 'C0');
-  Assert.AreEqual(0, Integer(NC9.PitchClass), 'C9');
-  Assert.AreEqual(7, Integer(NG9.PitchClass), 'G9');
-  Assert.AreEqual(10, Integer(NBb7.PitchClass), 'Bb7');
-  Assert.AreEqual(11, Integer(NB7.PitchClass), 'B7');
-  Assert.AreEqual(0, Integer(NC8.PitchClass), 'C8');
-  Assert.AreEqual(9, Integer(NA4.PitchClass), 'A4');
-  Assert.AreEqual(1, Integer(NDb5.PitchClass), 'Db5');
+  Assert.AreEqual(0, Integer(C_neg1.PitchClass), 'C-1');
+  Assert.AreEqual(0, Integer(C_0.PitchClass), 'C0');
+  Assert.AreEqual(0, Integer(C_9.PitchClass), 'C9');
+  Assert.AreEqual(7, Integer(G_9.PitchClass), 'G9');
+  Assert.AreEqual(10, Integer(Bb_7.PitchClass), 'Bb7');
+  Assert.AreEqual(11, Integer(B_7.PitchClass), 'B7');
+  Assert.AreEqual(0, Integer(C_8.PitchClass), 'C8');
+  Assert.AreEqual(9, Integer(A_4.PitchClass), 'A4');
+  Assert.AreEqual(1, Integer(Db_5.PitchClass), 'Db5');
 end;
 
 procedure TTestNotes.Operator_EQ_fails;
 begin
-  Assert.IsFalse(N8 = N100);
+  Assert.IsFalse(Ab_neg1 = E_7);
 end;
 
 procedure TTestNotes.Operator_EQ_succeeds;
 begin
-  Assert.IsTrue(N100 = N100Dup);
+  Assert.IsTrue(E_7 = E_7_dup);
 end;
 
 procedure TTestNotes.Operator_GTE_fails;
 begin
-  Assert.IsFalse(N7 >= N8);
+  Assert.IsFalse(G_neg1 >= Ab_neg1);
 end;
 
 procedure TTestNotes.Operator_GTE_succeeds;
 begin
-  Assert.IsTrue(N8 >= N7, '8 >= 7');
-  Assert.IsTrue(N100 >= N100Dup, '100 >= 100');
+  Assert.IsTrue(Ab_neg1 >= G_neg1, '-52 >= -53');
+  Assert.IsTrue(E_7 >= E_7_dup, '40 >= 40');
 end;
 
 procedure TTestNotes.Operator_GT_fails;
 begin
-  Assert.IsFalse(N7 > N8, '7 > 8');
-  Assert.IsFalse(N100 > N100Dup, '100 > 100');
+  Assert.IsFalse(G_neg1 > Ab_neg1, '-53 > -52');
+  Assert.IsFalse(E_7 > E_7_dup, '40 > 40');
 end;
 
 procedure TTestNotes.Operator_GT_succeeds;
 begin
-  Assert.IsTrue(N8 > N7);
+  Assert.IsTrue(Ab_neg1 > G_neg1);
 end;
 
 procedure TTestNotes.Operator_LTE_fails;
 begin
-  Assert.IsFalse(N8 <= N7);
+  Assert.IsFalse(Ab_neg1 <= G_neg1);
 end;
 
 procedure TTestNotes.Operator_LTE_succeeds;
 begin
-  Assert.IsTrue(N100 <= N100Dup, '100 <= 100');
-  Assert.IsTrue(N7 <= N8, '7 < 8');
+  Assert.IsTrue(E_7 <= E_7_dup, '40 <= 40');
+  Assert.IsTrue(G_neg1 <= Ab_neg1, '-53 < -52');
 end;
 
 procedure TTestNotes.Operator_LT_fails;
 begin
-  Assert.IsFalse(N100 < N100Dup, '100 < 100');
-  Assert.IsFalse(N8 < N7, '8 < 7');
+  Assert.IsFalse(E_7 < E_7_dup, '40 < 40');
+  Assert.IsFalse(Ab_neg1 < G_neg1, '-52 < -53');
 end;
 
 procedure TTestNotes.Operator_LT_succeeds;
 begin
-  Assert.IsTrue(N7 < N8);
+  Assert.IsTrue(G_neg1 < Ab_neg1);
 end;
 
 procedure TTestNotes.Operator_NEQ_fails;
 begin
-  Assert.IsFalse(N100 <> N100Dup);
+  Assert.IsFalse(E_7 <> E_7_dup);
 end;
 
 procedure TTestNotes.Operator_NEQ_succeeds;
 begin
-  Assert.IsTrue(N8 <> N7, '8 <> 7');
-  Assert.IsTrue(N7 <> N8, '7 <> 8');
+  Assert.IsTrue(Ab_neg1 <> G_neg1, '-52 <> -53');
+  Assert.IsTrue(G_neg1 <> Ab_neg1, '-53 <> -52');
 end;
 
 procedure TTestNotes.Setup;
 begin
-  N0 := TNote.Create(0);
-  N6 := TNote.Create(6);
-  N7 := TNote.Create(7);
-  N8 := TNote.Create(8);
-  N42 := TNote.Create(42);
-  N100 := TNote.Create(100);
-  N100Dup := TNote.Create(100);
-  N127 := TNote.Create(127);
-
-  NMinus1 := TNote.Create(CMinus1);
-  NC0 := TNote.Create(C0);
-  NC1 := TNote.Create(C1);
-  NC9 := TNote.Create(C9);
-  NG9 := TNote.Create(G9);
-  NBb7:= TNote.Create(Bb7);
-  NB7 := TNote.Create(B7);
-  NC8 := TNote.Create(C8);
-  NA4 := TNote.Create(A4);
-  NDb5:= TNote.Create(Db5);
-  NG4 := TNote.Create(G4);
+  C_neg1 := TNote.Create(C_neg1_pitch);
+  Gb_neg1 := TNote.Create(Gb_neg1_pitch);
+  G_neg1 := TNote.Create(G_neg1_pitch);
+  Ab_neg1 := TNote.Create(Ab_neg1_pitch);
+  C_0 := TNote.Create(C_0_pitch);
+  C_1 := TNote.Create(C_1_pitch);
+  Gb_2 := TNote.Create(Gb_2_pitch);
+  C_4 := TNote.Create(C_4_pitch);
+  G_4 := TNote.Create(G_4_pitch);
+  A_4 := TNote.Create(A_4_pitch);
+  Db_5 := TNote.Create(Db_5_pitch);
+  E_7 := TNote.Create(E_7_pitch);
+  E_7_dup := TNote.Create(E_7_pitch);
+  Bb_7:= TNote.Create(Bb_7_pitch);
+  B_7 := TNote.Create(B_7_pitch);
+  C_8 := TNote.Create(C_8_pitch);
+  C_9 := TNote.Create(C_9_pitch);
+  G_9 := TNote.Create(G_9_pitch);
+  Ab_9 := TNote.Create(Ab_9_pitch);
 end;
 
 procedure TTestNotes.TearDown;

@@ -117,11 +117,13 @@ type
     class operator LessThanOrEqual(const Left, Right: TNoteValue): Boolean;
   end;
 
-  ///  <summary>Valid MIDI note numbers.</summary>
-  TMIDINote = 0..127;   // TODO: move to MIDI.UConsts unit?
+  // TODO: Decide if TMIDINote is required
+  // TODO: Move TMIDINote to MIDI.Consts unit or similar?
+//  ///  <summary>Valid MIDI note numbers.</summary>
+//  TMIDINote = 0..127;
 
   ///  <summary>Range of supported note pitches.</summary>
-  TNotePitch = TMIDINote;
+  TNotePitch = -60..68;
 
   ///  <summary>Array of supported note pitches.</summary>
   TNotePitches = TArray<TNotePitch>;
@@ -143,16 +145,17 @@ type
     function GetOctaveNumber: Int8;
     function GetFrequency: Single;
     function SemitonesFromConcertA: Int8; inline;
+    function SemitonesFromMiddleC: Int8; inline;
   public
     const
-      /// <summary>Number of notes in an octave.</summary>
+      ///  <summary>Number of notes in an octave.</summary>
       NotesPerOctave = High(TPitchClass) - Low(TPitchClass) + 1;
-      /// <summary>Number of lowest supported octave.</summary>
+      ///  <summary>Number of lowest supported octave.</summary>
       LowestOctave = -1;
       ///  <summary>Pitch of middle C.</summary>
-      MiddleC: TNotePitch = 60;
+      MiddleC: TNotePitch = 0;
       ///  <summary>Pitch of concert A.</summary>
-      ConcertA: TNotePitch = 69;
+      ConcertA: TNotePitch = 9;
       ///  <summary>Frequency of concert A.</summary>
       ConcertAFrequency: Single = 440.0;
   public
@@ -397,7 +400,7 @@ end;
 
 function TNote.GetOctaveNumber: Int8;
 begin
-  Result := (fPitch div NotesPerOctave) + LowestOctave;
+  Result := ((fPitch - Low(TNotePitch)) div NotesPerOctave) + LowestOctave;
 end;
 
 function TNote.GetPitchClass: TPitchClass;
@@ -417,8 +420,8 @@ end;
 
 class operator TNote.Initialize(out Dest: TNote);
 begin
-  // Initialise pitch to lowest value (= lowest MIDI note = 0)
-  Dest.fPitch := Low(TNotePitch);
+  // Initialise pitch to middle C)
+  Dest.fPitch := MiddleC;
 end;
 
 class operator TNote.LessThan(const Left, Right: TNote): Boolean;
@@ -439,6 +442,11 @@ end;
 function TNote.SemitonesFromConcertA: Int8;
 begin
   Result := fPitch - ConcertA;
+end;
+
+function TNote.SemitonesFromMiddleC: Int8;
+begin
+  Result := fPitch - MiddleC;
 end;
 
 end.
