@@ -1,0 +1,66 @@
+Balanced Scales
+      | Modal Family
+65*   Z 65(p) [I=Self]
+273   A 273(p) [I=self]
+325   C 325(p), 1105 [I=1105, same family]
+403   D 403(p), 2249, 793, 611, 2353 [I=2353, same family]
+455   I 455(p), 2275, 3185 [I=3185, same family]
+585   B 585(p) [I=self]
+611   E 611, 2353, 403(p), 2249, 793
+715   F 715(p), 2405, 1625 [I=2665, different family, all balanced]
+793   E 793, 611, 2353, 403(p), 2249
+819   G 819(p), 2457 [I=2457, same family]
+845   P 845, 1235, 2665  [p=715] [I=1625, different family, all balanced]
+871   J 871(p), 2483, 3289, 923, 2509, 1651, 2873 [I=3289, same family]
+923   J 923, 2509, 1651, 2873, 871(p), 2483, 3289
+975   M 975(p), 2535, 3315, 3705 [I=3705, same family]
+1105  E 1105, 325(p)
+1235  P 1235, 2665, 845 [p=715]
+1365  D 1365(p) [I=self]
+1495  K 1495(p), 2795, 3445, 1885 [I=3445, same family]
+1625  F 1625, 715(p), 2405
+1651  J 1651, 2873, 871(p), 2483, 3289, 923, 2509
+1755  H 1755(p), 2925 [I=2925, same family]
+1885  K 1885, 1495(p), 2795, 3445
+1911  L 1911(p), 3003, 3549 [I=3549, same family]
+2015  N 2015(p), 3055, 3575, 3835, 3965 [I=3965, same family]
+2249  E 2249, 793, 611, 2353, 403(p)
+2275  I 2275, 3185, 455(p)
+2353  E 2353, 403(p), 2249, 793, 611
+2405  F 2405, 1625, 715(p)
+2457  G 2457, 819(p)
+2483  J 2483, 3289, 923, 2509, 1651, 2873, 871(p)
+2509  J 2509, 1651, 2873, 871(p), 2483, 3289, 923
+2535  M 2535, 3315, 3705, 975(p)
+2665  P 2665, 845, 1235 [p=715]
+2795  K 2795, 3445, 1885, 1495(p)
+2873  J 2873, 871(p), 2483, 3289, 923, 2509, 1651
+2925  H 2925, 1755(p)
+3003  L 3003, 3549, 1911(p)
+3055  N 3055, 3575, 3835, 3965, 2015(p)
+3185  I 3185, 455(p), 2275
+3289  J 3289, 923, 2509, 1651, 2873, 871(p), 2483
+3315  M 3315, 3705, 975(p), 2535
+3445  K 3445, 1885, 1495(p), 2795
+3549  L 3549, 1911(p), 3003
+3575  N 3575, 3835, 3965, 2015(p), 3055
+3705  M 3705, 975(p), 2535, 3315
+3835  N 3835, 3965, 2015(p), 3055, 3575
+3965  N 3965, 2015(p), 3055, 3575, 3835
+4095  O 4095(p) [I=self]
+
+* = not in Ring's list but https://ianring.com/musictheory/scales/65 has balanced = yes
+
+The column of capital letters indicates which modal family each scale belongs to. Scales with the same letter belong to the same group.
+
+(p) means the scale is prime
+[I=xxx] gives the inverse of each prime scale.
+[p=xxx] gives the prime for modal families that don't include the prime scale.
+
+If A is a balanced scale then all its modes are balanced and all the modes of
+its inverse are balanced.
+
+In other words, all the modal families with the same prime as A are balanced.
+
+Balanced primes are:
+  65*, 273, 325, 403, 455, 585, 715, 819, 871, 975, 1365, 1495, 1755, 1911, 2015, 4095.
