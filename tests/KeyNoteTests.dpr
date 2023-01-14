@@ -18,7 +18,10 @@ uses
   Core.Enumerators in '..\src\Core.Enumerators.pas',
   Test.Core.Enumerators in 'Test.Core.Enumerators.pas',
   Core.StringUtils in '..\src\Core.StringUtils.pas',
-  Test.Core.StringUtils in 'Test.Core.StringUtils.pas';
+  Test.Core.StringUtils in 'Test.Core.StringUtils.pas',
+  Music.Scales in '..\src\Music.Scales.pas',
+  Test.Music.Scales in 'Test.Music.Scales.pas',
+  Data.Scales in 'Data.Scales.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
