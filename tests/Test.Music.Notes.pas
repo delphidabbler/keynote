@@ -175,18 +175,65 @@ type
     procedure Setup;
     [TearDown]
     procedure TearDown;
+
+    [Test]
+    procedure NotesPerOctave_calculated_const;
+    [Test]
+    procedure HighestOctave_calculated_const_is_9;
+
     [Test]
     procedure note_pitch_without_ctor_is_middle_c;
     [Test]
     procedure note_pitch_with_ctor_is_correct;
+
     [Test]
     procedure note_value_without_ctor_is_crotchet;
     [Test]
     procedure note_value_with_pitch_but_no_value_is_crotchet;
     [Test]
     procedure note_value_with_ctor_is_correct;
+
     [Test]
     procedure bad_note_pitch_in_ctor_fails_assertion;
+
+    [Test]
+    [TestCase('10 (too high)', 'False,10')]
+    [TestCase('9 (highest valid)', 'True,9')]
+    [TestCase('4 (middle)', 'True,4')]
+    [TestCase('-1 (lowest valid)', 'True,-1')]
+    [TestCase('-2 (too low)', 'False,-2')]
+    procedure IsOctaveInRange(Expected: Boolean; AOctave: Int8);
+
+    [Test]
+    [TestCase('C10 (octave too high)', 'False,0,10')]
+    [TestCase('A9 (octave OK, pitch too high)', 'False,9,9')]
+    [TestCase('G#9 (highest valid note)', 'True,8,9')]
+    [TestCase('Middle C (note zero)', 'True,0,4')]
+    [TestCase('C-1 (lowest valid note)', 'True,0,-1')]
+    [TestCase('B-2 (octave too low)', 'False,11,-2')]
+    procedure IsNoteInRange(Expected: Boolean; APitchClass: TPitchClass;
+      AOctave: Int8);
+
+    [Test]
+    [TestCase('Highest note G#9', '68,8,9')]
+    [TestCase('Lowest note C-1', '-60,0,-1')]
+    [TestCase('Middle C4', '0,0,4')]
+    [TestCase('B6', '35,11,6')]
+    [TestCase('D3', '-10,2,3')]
+    procedure CreateFromPitchClass_ctor_is_correct(Expected: TNotePitch;
+      PitchClass: TPitchClass; Octave: Int8);
+    [Test]
+    [TestCase('C','0,0')]
+    [TestCase('B','11,11')]
+    [TestCase('D','2,2')]
+    procedure CreateFromPitchClass_ctor_is_correct_default_octave(Expected:
+      TNotePitch; PitchClass: TPitchClass);
+    [Test]
+    [TestCase('Octave -2', '-2')]
+    [TestCase('Octave 10', '10')]
+    procedure CreateFromPitchClass_ctor_exception_on_bad_octave(Octave: Int8);
+    [Test]
+    procedure CreateFromPitchClass_ctor_exception_on_too_high_pitch;
 
     [Test]
     [TestCase('A=B','0,10,10')]
@@ -256,6 +303,37 @@ type
     procedure GetNameOf;
     [Test]
     procedure Frequency;
+
+    [Test]
+    [TestCase('Middle C + 4', '4,0,4')]
+    [TestCase('Middle C - 8', '-8,0,-8')]
+    [TestCase('Lowest note (-60) + 48', '-12,-60,48')]
+    [TestCase('Lowest note (-60) + 128', '68,-60,128')]
+    [TestCase('Highest note (68) - 56', '12,68,-56')]
+    [TestCase('Highest note (68) - 128', '-60,68,-128')]
+    procedure TransposeBy_succeeds(ExpectedPitch, StartPitch: TNotePitch;
+      Semitones: Integer);
+    [Test]
+    [TestCase('Highest note (68) + 1', '68,1')]
+    [TestCase('Middle C (0) + 69', '0,69')]
+    [TestCase('Middle C (0) - 61', '0,-61')]
+    [TestCase('Lowest note (-60) - 1', '-60,-1')]
+    procedure TransposeBy_fails(StartPitch: TNotePitch; Semitones: Integer);
+
+    [Test]
+    [TestCase('Middle C + 4', 'True,0,4')]
+    [TestCase('Middle C - 8', 'True,0,-8')]
+    [TestCase('Lowest note (-60) + 48', 'True,-60,48')]
+    [TestCase('Lowest note (-60) + 128', 'True,-60,128')]
+    [TestCase('Highest note (68) - 56', 'True,68,-56')]
+    [TestCase('Highest note (68) - 128', 'True,68,-128')]
+    [TestCase('Highest note (68) + 1', 'False,68,1')]
+    [TestCase('Middle C (0) + 69', 'False,0,69')]
+    [TestCase('Middle C (0) - 61', 'False,0,-61')]
+    [TestCase('Lowest note (-60) - 1', 'False,-60,-1')]
+    procedure CanTransposeBy(Expected: Boolean; StartPitch: TNotePitch;
+      Semitones: Integer);
+
   end;
 
 implementation
@@ -479,6 +557,13 @@ begin
   );
 end;
 
+procedure TTestNotes.CanTransposeBy(Expected: Boolean; StartPitch: TNotePitch;
+  Semitones: Integer);
+begin
+  var N := TNote.Create(StartPitch, TNoteValue.Create(TNoteValue.Quaver));
+  Assert.AreEqual(Expected, N.CanTransposeBy(Semitones));
+end;
+
 procedure TTestNotes.Compare(const Expected: TValueRelationship; LeftPitch,
   RightPitch: TNotePitch; LeftValue, RightValue: UInt16);
 begin
@@ -512,13 +597,53 @@ begin
   Assert.AreEqual(9, Integer(N.PitchClass), 'Offset');
 end;
 
+procedure TTestNotes.CreateFromPitchClass_ctor_exception_on_bad_octave(
+  Octave: Int8);
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var N := TNote.CreateFromPitchClass(0, Octave);
+    end,
+    EArgumentOutOfRangeException
+  );
+end;
+
+procedure TTestNotes.CreateFromPitchClass_ctor_exception_on_too_high_pitch;
+const
+  A9PitchClass = 9;
+  A9Octave = 9;
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var N := TNote.CreateFromPitchClass(A9PitchClass, A9Octave);
+    end,
+    ENotSupportedException
+  );
+end;
+
+procedure TTestNotes.CreateFromPitchClass_ctor_is_correct(Expected: TNotePitch;
+  PitchClass: TPitchClass; Octave: Int8);
+begin
+  var N := TNote.CreateFromPitchClass(PitchClass, Octave);
+  Assert.AreEqual(Expected, N.Pitch);
+end;
+
+procedure TTestNotes.CreateFromPitchClass_ctor_is_correct_default_octave(
+  Expected: TNotePitch; PitchClass: TPitchClass);
+begin
+  var N := TNote.CreateFromPitchClass(PitchClass);
+  Assert.AreEqual(Expected, N.Pitch);
+end;
+
 procedure TTestNotes.Frequency;
 begin
   // Expected from varioua cross-checked online resources.
   Assert.AreEqual(Double(13289.75), Double(Ab_9.Frequency), 0.01, 'Ab9');
   Assert.AreEqual(Double(12543.85), Double(G_9.Frequency), 0.01, 'G9');
   Assert.AreEqual(Double(4186.01), Double(C_8.Frequency), 0.01, 'C8');
-  Assert.AreEqual(Double(440.00), Double(A_4.Frequency), 0.01, 'A4 (poncert)');
+  Assert.AreEqual(Double(440.00), Double(A_4.Frequency), 0.01, 'A4 (concert)');
   Assert.AreEqual(Double(554.37), Double(Db_5.Frequency), 0.01, 'Db5');
   Assert.AreEqual(Double(392.00), Double(G_4.Frequency), 0.01, 'G4');
   Assert.AreEqual(Double(261.63), Double(C_4.Frequency), 0.01, 'C4 (middle C)');
@@ -568,11 +693,32 @@ begin
   );
 end;
 
+procedure TTestNotes.HighestOctave_calculated_const_is_9;
+begin
+  Assert.AreEqual(9, TNote.HighestOctave);
+end;
+
+procedure TTestNotes.IsNoteInRange(Expected: Boolean; APitchClass: TPitchClass;
+  AOctave: Int8);
+begin
+  Assert.AreEqual(Expected, TNote.IsNoteInRange(APitchClass, AOctave));
+end;
+
+procedure TTestNotes.IsOctaveInRange(Expected: Boolean; AOctave: Int8);
+begin
+  Assert.AreEqual(Expected, TNote.IsOctaveInRange(AOctave));
+end;
+
 procedure TTestNotes.middle_C;
 begin
   var N := TNote.Create(TNote.MiddleC);
   Assert.AreEqual(4, Integer(N.OctaveNumber), 'Octave');
   Assert.AreEqual(0, Integer(N.PitchClass), 'Offset');
+end;
+
+procedure TTestNotes.NotesPerOctave_calculated_const;
+begin
+  Assert.AreEqual(12, TNote.NotesPerOctave);
 end;
 
 procedure TTestNotes.note_pitch_without_ctor_is_middle_c;
@@ -729,6 +875,28 @@ end;
 
 procedure TTestNotes.TearDown;
 begin
+end;
+
+procedure TTestNotes.TransposeBy_fails(StartPitch: TNotePitch;
+  Semitones: Integer);
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var N := TNote.Create(StartPitch);
+      var TN := N.TransposeBy(Semitones);
+    end,
+    EArgumentException
+  );
+end;
+
+procedure TTestNotes.TransposeBy_succeeds(ExpectedPitch, StartPitch: TNotePitch;
+  Semitones: Integer);
+begin
+  var N := TNote.Create(StartPitch, TNoteValue.Create(TNoteValue.Quaver));
+  var TransposedN := N.TransposeBy(Semitones);
+  Assert.AreEqual(ExpectedPitch, TransposedN.Pitch);
+  Assert.AreEqual(TNoteValue.Quaver, TransposedN.Value.Ticks);
 end;
 
 procedure TTestNotes.Value_prop_is_correct;

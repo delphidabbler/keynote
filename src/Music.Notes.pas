@@ -130,7 +130,7 @@ type
   // TODO: Decide if TMIDINote is required
   // TODO: Move TMIDINote to MIDI.Consts unit or similar?
 //  ///  <summary>Valid MIDI note numbers.</summary>
-//  TMIDINote = 0..127;
+  //  TMIDINote = 0..127;
 
   ///  <summary>Range of supported note pitches.</summary>
   TNotePitch = -60..68;
@@ -156,18 +156,30 @@ type
     function GetFrequency: Single;
     function SemitonesFromConcertA: Int8; inline;
     function SemitonesFromMiddleC: Int8; inline;
+    function TryTransposeBy(const ASemitones: Integer;
+      out ATransposedNote: TNote): Boolean;
+    class function GetPitchFromPitchClassAndOctave(const PC: TPitchClass;
+      const Octave: Int8): TNotePitch; static;
+    class function TryGetPitchFromPitchClassAndOctave(const PC: TPitchClass;
+      const Octave: Int8; out APitch: TNotePitch): Boolean; static;
+
   public
     const
       ///  <summary>Number of notes in an octave.</summary>
       NotesPerOctave = High(TPitchClass) - Low(TPitchClass) + 1;
       ///  <summary>Number of lowest supported octave.</summary>
       LowestOctave = -1;
+      ///  <summary>Number of highest supported octave.</summary>
+      HighestOctave = (High(TNotePitch) - Low(TNotePitch))
+        div NotesPerOctave + LowestOctave;
       ///  <summary>Pitch of middle C.</summary>
       MiddleC: TNotePitch = 0;
       ///  <summary>Pitch of concert A.</summary>
       ConcertA: TNotePitch = 9;
       ///  <summary>Frequency of concert A.</summary>
       ConcertAFrequency: Single = 440.0;
+      //  <summary>Pitch class of C.</summary>
+      PitchClassOfC: TPitchClass = 0;
   public
     ///  <summary>Instantiates a new record for the given pitch, with default
     ///  note value.</summary>
@@ -177,6 +189,32 @@ type
     ///  </summary>
     constructor Create(const APitch: TNotePitch; const AValue: TNoteValue);
       overload;
+
+    ///  <summary>Instantiates a new record for the note with given pitch class
+    ///  in the same octave as middle C (i.e. octave 4) and default note value.
+    ///  </summary>
+    ///  <exception><c>ENotSupportedException</c> raised if the pitch of the
+    ///  resulting note is not supported.</exception>
+    constructor CreateFromPitchClass(const APitchClass: TPitchClass); overload;
+
+    ///  <summary>Instantiates a new record for the note with given pitch class
+    ///  and octave and default note value.</summary>
+    ///  <exception><c>EArgumentOutOfRangeException</c> raised if AOctave is
+    ///  out of range.</exception>
+    ///  <exception><c>ENotSupportedException</c> raised if the pitch of the
+    ///  resulting note is not supported.</exception>
+    constructor CreateFromPitchClass(const APitchClass: TPitchClass;
+      const AOctave: Int8); overload;
+
+    ///  <summary>Checks if given octave is within range of valid octaves.
+    ///  </summary>
+    class function IsOctaveInRange(const AOctave: Int8): Boolean; static;
+      inline;
+
+    ///  <summary>Checks if note with given pitch class and octave is in range
+    ///  of supported notes.</summary>
+    class function IsNoteInRange(const APitchClass: TPitchClass;
+      const AOctave: Int8): Boolean; static;
 
     ///  <summary>Pitch of the note.</summary>
     property Pitch: TNotePitch read fPitch;
@@ -204,9 +242,9 @@ type
     ///  </param>
     ///  <param name="Acc">Accidental that qualifies note. Defaults to natural.
     ///  [in]</param>
-    ///  <param name="HideNatural">Wether natural notes should include
+    ///  <param name="HideNatural">Whether natural notes should include
     ///  accidental (False) or not (True). [in]</param>
-    ///  <returns>string. Required note name.</returns>
+    ///  <returns><c>string</c>. Required note name.</returns>
     ///  <remarks>Octave is not included in note name.</remarks>
     class function GetNameOf(const NaturalNote: TNaturalNoteNumber;
       const Acc: TAccidentals.TKind = TAccidentals.TKind.Natural;
@@ -216,7 +254,7 @@ type
     ///  </summary>
     ///  <param name="UseSharps">Determines whether to use sharps or flats in
     ///  note names that require accidentals. [in]</param>
-    ///  <returns>string. Full note name.</returns>
+    ///  <returns><c>string</c>. Full note name.</returns>
     function GetFullName(const UseSharps: Boolean): string;
 
     ///  <summary>Compares two notes and returns a value indicating their
@@ -242,6 +280,17 @@ type
     ///  </remarks>
     class function CompareValue(const Left, Right: TNote): TValueRelationship;
       static;
+
+    ///  <summary>Creates and returns a new note, that is transposed by the
+    ///  given number of semitones from this note. The Value property is not
+    ///  changed.</summary>
+    ///  <exception><c>EArgumentException</c> raised if note can't be transposed
+    ///  by the given number of semitones.</exception>
+    function TransposeBy(const ASemitones: Integer): TNote;
+
+    ///  <summary>Checks if this note can be transposed by the given number of
+    ///  semitones.</summary>
+    function CanTransposeBy(const ASemitones: Integer): Boolean;
 
     class operator Initialize(out Dest: TNote);
     class operator Equal(const Left, Right: TNote): Boolean;
@@ -365,19 +414,10 @@ end;
 
 { TNote }
 
-constructor TNote.Create(const APitch: TNotePitch);
+function TNote.CanTransposeBy(const ASemitones: Integer): Boolean;
 begin
-  // We need to check this, because compiler will allow an integer variable to
-  // be passed to constructor, and will allow assignment even if integer is
-  // outside bounds of TNotePitch
-  Assert(
-    (
-      Integer(APitch) >= Integer(Low(TNotePitch)))
-      and (Integer(APitch) <= Integer(High(TNotePitch))
-    ),
-    'TNote.Create: APitch out of bounds'
-  );
-  fPitch := APitch;
+  var Dummy: TNote;
+  Result := TryTransposeBy(ASemitones, Dummy);
 end;
 
 class function TNote.Compare(const Left, Right: TNote): TValueRelationship;
@@ -404,10 +444,37 @@ begin
   Result := TNoteValue.Compare(Left.Value, Right.Value);
 end;
 
+constructor TNote.Create(const APitch: TNotePitch);
+begin
+  // We need to check this, because compiler will allow an integer variable to
+  // be passed to constructor, and will allow assignment even if integer is
+  // outside bounds of TNotePitch
+  Assert(
+    (
+      Integer(APitch) >= Integer(Low(TNotePitch)))
+      and (Integer(APitch) <= Integer(High(TNotePitch))
+    ),
+    'TNote.Create: APitch out of bounds'
+  );
+  fPitch := APitch;
+end;
+
 constructor TNote.Create(const APitch: TNotePitch; const AValue: TNoteValue);
 begin
   Create(APitch);
   fValue := AValue;
+end;
+
+constructor TNote.CreateFromPitchClass(const APitchClass: TPitchClass);
+begin
+  var MidC := TNote.Create(MiddleC);
+  CreateFromPitchClass(APitchClass, MidC.OctaveNumber);
+end;
+
+constructor TNote.CreateFromPitchClass(const APitchClass: TPitchClass;
+  const AOctave: Int8);
+begin
+  Create(GetPitchFromPitchClassAndOctave(APitchClass, AOctave));
 end;
 
 class operator TNote.Equal(const Left, Right: TNote): Boolean;
@@ -492,6 +559,21 @@ begin
   Result := fPitch mod NotesPerOctave;
 end;
 
+class function TNote.GetPitchFromPitchClassAndOctave(const PC: TPitchClass;
+  const Octave: Int8): TNotePitch;
+begin
+  if not IsOctaveInRange(Octave) then
+    raise EArgumentOutOfRangeException.CreateFmt(
+      'Octave %d is out of range. Valid range is [%d,%d]',
+      [Octave, LowestOctave, HighestOctave]
+    );
+  if not TryGetPitchFromPitchClassAndOctave(PC, Octave, Result) then
+    raise ENotSupportedException.CreateFmt(
+      'Pitch is not supported. Valid range is [%d,%d]',
+      [Low(TNotePitch), High(TNotePitch)]
+    );
+end;
+
 class operator TNote.GreaterThan(const Left, Right: TNote): Boolean;
 begin
   Result := Compare(Left, Right) = GreaterThanValue;
@@ -507,6 +589,18 @@ begin
   // Initialise pitch to middle C)
   Dest.fPitch := MiddleC;
   // Dest.fValue will be automatically set to crotchet by TNoteValue.Initialize
+end;
+
+class function TNote.IsNoteInRange(const APitchClass: TPitchClass;
+  const AOctave: Int8): Boolean;
+begin
+  var Dummy: TNotePitch;
+  Result := TryGetPitchFromPitchClassAndOctave(APitchClass, AOctave, Dummy);
+end;
+
+class function TNote.IsOctaveInRange(const AOctave: Int8): Boolean;
+begin
+  Result := (AOctave >= LowestOctave) and (AOctave <= HighestOctave);
 end;
 
 class operator TNote.LessThan(const Left, Right: TNote): Boolean;
@@ -532,6 +626,35 @@ end;
 function TNote.SemitonesFromMiddleC: Int8;
 begin
   Result := fPitch - MiddleC;
+end;
+
+function TNote.TransposeBy(const ASemitones: Integer): TNote;
+begin
+  if not TryTransposeBy(ASemitones, Result) then
+    raise EArgumentException.CreateFmt(
+      'Can''t transpose note %s by %d semitones: note would by out of range',
+      [GetFullName(True), ASemitones]
+    );
+end;
+
+class function TNote.TryGetPitchFromPitchClassAndOctave(const PC: TPitchClass;
+  const Octave: Int8; out APitch: TNotePitch): Boolean;
+begin
+  var PitchAsInt: Integer := NotesPerOctave * (Octave - LowestOctave)
+    + Low(TNotePitch) + PC;
+  Result := (PitchAsInt >= Low(TNotePitch))
+    and (PitchAsInt <= High(TNotePitch));
+  if Result then
+    APitch := TPitchClass(PitchAsInt);
+end;
+
+function TNote.TryTransposeBy(const ASemitones: Integer;
+  out ATransposedNote: TNote): Boolean;
+begin
+  var NewPitch: Integer := fPitch + ASemitones;
+  Result := (NewPitch >= Low(TNotePitch)) and (NewPitch <= High(TNotePitch));
+  if Result then
+    ATransposedNote := TNote.Create(TNotePitch(NewPitch), fValue);
 end;
 
 end.
