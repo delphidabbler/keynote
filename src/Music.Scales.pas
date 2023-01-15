@@ -57,6 +57,9 @@ type
       // Largest interval permitted for Zeitler's scales
       ZeitlersConstant = 4; // major 3rd
 
+      // Major scale
+      MajorPitchClassSet: TPitchClassSet = [0,2,4,5,7,9,11];
+
   public
     type
       ///  <summary>Comparer class for TScale.</summary>
@@ -331,10 +334,12 @@ type
     ///  </remarks>
     function IsDeep: Boolean;
 
-    ///  <summary>****TOTO****</summary>
+    ///  <summary>Calculates the modal family containing scales that are
+    ///  abstract complements of this scale.</summary>
     ///  <remarks>
-    ///  <para>
-    ///  </para>
+    ///  <para>Scales are abstract complements of each other if the two scales'
+    ///  pitch class sets are complements, i.e. each contains all the notes not
+    ///  in the other.</para>
     ///  <para>Since the complement of a scale is equivalent to the complement
     ///  of a scale's inverse (https://tinyurl.com/bdcru32t) then we choose the
     ///  complement with the smallest Ring number.</para>
@@ -399,6 +404,7 @@ begin
 end;
 
 function TScale.Complement: TArray<TScale>;
+
   function ComplementOf(const S: TScale): TArray<TScale>;
   begin
     Assert(S.RingNumber <> ChromaticScaleNumber);

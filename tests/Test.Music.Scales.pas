@@ -36,13 +36,14 @@ type
       PitchClassSet_Bad_Empty: TPitchClassSet = [];
       PitchClassSet_Bad_Unrooted: TPitchClassSet = [1, 2, 7, 11];
 
-      AllBalancedScales: TScaleNumberArray = [
-        65, // not in Ring's list of balanced scales
-        273, 325, 403, 455, 585, 611, 715, 793, 819, 845, 871, 923, 975, 1105,
-        1235, 1365, 1495, 1625, 1651, 1755, 1885, 1911, 2015, 2249, 2275, 2353,
-        2405, 2457, 2483, 2509, 2535, 2665, 2795, 2873, 2925, 3003, 3055, 3185,
-        3289, 3315, 3445, 3549, 3575, 3705, 3835, 3965, 4095
-      ];
+// TODO: for use if and when IsBalanced method is implemented
+//      AllBalancedScales: TScaleNumberArray = [
+//        65, // not in Ring's list of balanced scales
+//        273, 325, 403, 455, 585, 611, 715, 793, 819, 845, 871, 923, 975, 1105,
+//        1235, 1365, 1495, 1625, 1651, 1755, 1885, 1911, 2015, 2249, 2275, 2353,
+//        2405, 2457, 2483, 2509, 2535, 2665, 2795, 2873, 2925, 3003, 3055, 3185,
+//        3289, 3315, 3445, 3549, 3575, 3705, 3835, 3965, 4095
+//      ];
 
     var
       fTestData: TScalesTestDataReader;
@@ -108,6 +109,10 @@ type
     [Test]
     // depends only on RingNumber property setter
     procedure RingNumber_ctor_invalid_number;
+
+    // test depends on default & RingNumber ctors & property getter
+    [Test]
+    procedure assignment_is_correct;
 
     [Test]
     // depends only on RingNumber property getter
@@ -272,10 +277,6 @@ type
     [Test]
     procedure Complement_is_correct;
 
-    [Test]
-    procedure IsBalanced_is_true;
-    [Test]
-    procedure IsBalanced_is_false;
   end;
 
 implementation
@@ -286,6 +287,17 @@ uses
 
 
 { TTestScale }
+
+procedure TTestScale.assignment_is_correct;
+const
+  RN: UInt16 = 2471;
+begin
+  var S := TScale.CreateFromRingNumber(RN);
+  var T: TScale;
+  Assert.IsFalse(RN = T.RingNumber, 'Before assignment');
+  T := S;
+  Assert.IsTrue(RN = T.RingNumber, 'After assignment');
+end;
 
 procedure TTestScale.Cardinality_is_correct;
 begin
@@ -510,26 +522,6 @@ procedure TTestScale.Inverse_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
     Assert.AreEqual(D.Inverse, fScales[D.RingNumber].Inverse.RingNumber, D.RingName);
-end;
-
-procedure TTestScale.IsBalanced_is_false;
-begin
-{ TODO: restore code if/when IsBalanced is implemented
-  // Exhaustive test of all unbalanced scales
-  for var RN := 1 to 4095 do
-    if Odd(RN) and not IsInArray(AllBalancedScales, RN) then
-      Assert.IsFalse(TScale.CreateFromRingNumber(RN).IsBalanced, RN.ToString);
-}
-end;
-
-procedure TTestScale.IsBalanced_is_true;
-begin
-{ TODO: restore code if/when IsBalanced is implemented
-  // Exhaustive test of all balanced scale per list at
-  // https://ianring.com/musictheory/scales/#balance
-  for var RN in AllBalancedScales do
-    Assert.IsTrue(TScale.CreateFromRingNumber(RN).IsBalanced, RN.ToString);
-}
 end;
 
 procedure TTestScale.IsChiral_is_correct;
