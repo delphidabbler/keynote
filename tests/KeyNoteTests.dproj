@@ -68,6 +68,8 @@
         <DCCReference Include="..\src\Music.Scales.pas"/>
         <DCCReference Include="Test.Music.Scales.pas"/>
         <DCCReference Include="Data.Scales.pas"/>
+        <DCCReference Include="..\src\Music.CircleOf5ths.pas"/>
+        <DCCReference Include="Test.Music.CircleOf5ths.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -21,7 +21,9 @@ uses
   Test.Core.StringUtils in 'Test.Core.StringUtils.pas',
   Music.Scales in '..\src\Music.Scales.pas',
   Test.Music.Scales in 'Test.Music.Scales.pas',
-  Data.Scales in 'Data.Scales.pas';
+  Data.Scales in 'Data.Scales.pas',
+  Music.CircleOf5ths in '..\src\Music.CircleOf5ths.pas',
+  Test.Music.CircleOf5ths in 'Test.Music.CircleOf5ths.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
