@@ -38,6 +38,7 @@ begin
 {$IFDEF TESTINSIGHT}
   TestInsight.DUnitX.RunRegisteredTests;
 {$ELSE}
+  ReportMemoryLeaksOnShutdown := True;
   try
     //Check command line options, will exit if invalid
     TDUnitX.CheckCommandLine;
