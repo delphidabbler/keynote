@@ -1,4 +1,4 @@
-RN	Is_Zeitler	ZNBE	ZNLE	R_Name	Z_Name	Cardinality	PCS	RotSym	Palindrome	Chirality	Hemitonia	Cohemitonia	Imperfections	Perfections	Mode_Count	Prime_Form	RN_Prime	Deep	Intervals	Leap	Int_Vector	Balanced	Modes	Complement	Inverse
+SN	Is_Zeitler	ZNBE	ZNLE	R_Name	Z_Name	Cardinality	PCS	RotSym	Palindrome	Chirality	Hemitonia	Cohemitonia	Imperfections	Perfections	Mode_Count	Prime_Form	RN_Prime	Deep	Intervals	Leap	Int_Vector	Balanced	Modes	Complement	Inverse
 1	0			Unison		1	0	0	1	0	0	0	1	0	1	1	1	0	12	12	0,0,0,0,0,0	0		2047, 3071, 3583, 3839, 3967, 4031, 4063, 4079, 4087, 4091, 4093	1
 65	0			Tritone		2	0,6	6	1	0	0	0	2	0	1	1	65	0	6,6	6	0,0,0,0,0,1	1		2015, 3055, 3575, 3835, 3965	65
 33	0			Honchoshi		2	0,5	0	0	0	0	0	1	1	2	1	33	0	5,7	7	0,0,0,0,1,0	0	129	1983, 2031, 3039, 3063, 3567, 3579, 3831, 3837, 3963, 4029	129

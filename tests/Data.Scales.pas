@@ -12,11 +12,11 @@ uses
 type
   // Test data record. Each field maps to a column of the data file, in order
   TScaleTestData = record
-    RingNumber: UInt16;
+    ScaleNumber: UInt16;
     IsZeitlerScale: Boolean;
     ZeitlerNumberAsc: UInt16;
     ZeitlerNumberDesc: UInt16;
-    RingName: string;
+    ScaleName: string;
     ZeitlerName: string;
     Cardinality: Cardinal;
     PitchClassSet: TPitchClassSet;
@@ -45,11 +45,11 @@ type
   TScalesTestDataReader = class
   strict private
     const
-      ColRingNumber = 'RN';
+      ColScaleNumber = 'SN';
       ColIsZeietlerScale = 'Is_Zeitler';
       ColZeitlerNumberAsc = 'ZNBE';
       ColZeitlerNumberDesc = 'ZNLE';
-      ColRingName = 'R_Name';
+      ColName = 'R_Name';
       ColZeitlerName = 'Z_Name';
       ColCardinality = 'Cardinality';
       ColPitchClassSet = 'PCS';
@@ -202,11 +202,11 @@ begin
     Exit;
   Columns := DataText.Split([#9]);
   var Data: TScaleTestData;
-  Data.RingNumber := UInt16(GetDataFor(ColRingNumber).ToInteger);
+  Data.ScaleNumber := UInt16(GetDataFor(ColScaleNumber).ToInteger);
   Data.IsZeitlerScale := GetDataFor(ColIsZeietlerScale).ToBoolean;
   Data.ZeitlerNumberAsc := UInt16(StrToIntDef(GetDataFor(ColZeitlerNumberAsc), 0));
   Data.ZeitlerNumberDesc := UInt16(StrToIntDef(GetDataFor(ColZeitlerNumberDesc), 0));
-  Data.RingName := GetDataFor(ColRingName);
+  Data.ScaleName := GetDataFor(ColName);
   Data.ZeitlerName := GetDataFor(ColZeitlerName);
   Data.Cardinality := Cardinal(GetDataFor(ColCardinality).ToInteger);
   Data.PitchClassSet := ParsePitchClassSet(GetDataFor(ColPitchClassSet));
@@ -230,7 +230,7 @@ begin
   Data.Modes := ParseModeNumberList(GetDataFor(ColModes));
   Data.Complement := ParseModeNumberList(GetDataFor(ColComplement));
   Data.Inverse := UInt16(GetDataFor(ColInverse).ToInteger);
-  fData.Add(Data.RingNumber, Data);
+  fData.Add(Data.ScaleNumber, Data);
 end;
 
 

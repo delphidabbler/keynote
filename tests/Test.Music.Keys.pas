@@ -91,7 +91,7 @@ begin
   Assert.WillRaise(
     procedure
     begin
-      var K := TKey.Create(TScale.CreateFromRingNumber(2471), 4);
+      var K := TKey.Create(TScale.CreateFromScaleNumber(2471), 4);
       K.Notes(9);
     end,
     EKey
@@ -176,7 +176,7 @@ begin
   Assert.WillRaise(
     procedure
     begin
-      var K := TKey.Create(TScale.CreateFromRingNumber(2471), StartTonic);
+      var K := TKey.Create(TScale.CreateFromScaleNumber(2471), StartTonic);
       var KT := K.TransposeBy(Semitones);
     end,
     EAssertionFailed
@@ -186,7 +186,7 @@ end;
 procedure TTestKey.TransposeBy_is_correct(ExpectedTonic,
   StartTonic: TPitchClass; Semitones: TInterval);
 begin
-  var K := TKey.Create(TScale.CreateFromRingNumber(2471), StartTonic);
+  var K := TKey.Create(TScale.CreateFromScaleNumber(2471), StartTonic);
   var KT := K.TransposeBy(Semitones);
   Assert.AreEqual(ExpectedTonic, KT.Tonic);
 end;

@@ -22,13 +22,13 @@ type
       TScaleNumberArray = array of UInt16;
 
     const
-      RingNumber_Bad_Zero = UInt16(0);
-      RingNumber_Bad_HiBitsSet = UInt16($1235);
-      RingNumber_Bad_Unrooted = UInt16(2472);
+      ScaleNumber_Bad_Zero = UInt16(0);
+      ScaleNumber_Bad_HiBitsSet = UInt16($1235);
+      ScaleNumber_Bad_Unrooted = UInt16(2472);
 
-      RingNumber_Good_Low = UInt16(1);
-      RingNumber_Good_Middle = UInt16(2471);
-      RingNumber_Good_High = UInt16(4095);
+      ScaleNumber_Good_Low = UInt16(1);
+      ScaleNumber_Good_Middle = UInt16(2471);
+      ScaleNumber_Good_High = UInt16(4095);
 
       IntervalPattern_Bad_Empty: TIntervalPattern = [];
       IntervalPattern_Bad_DoesnotSumTo12: TIntervalPattern = [2,1,3,2];
@@ -48,22 +48,24 @@ type
     var
       fTestData: TScalesTestDataReader;
 
-      // Map of Ring number to TScale record with that Ring number
-      fScales: TScalesMap;  // Use only after TScale.RingNumber has been tested
+      // Map of scale number to TScale record with that scale number
+      fScales: TScalesMap;  // Use only after TScale.ScaleNumber has been tested
 
-    // Get test data record for given Ring number
-    function TD(const RingNumber: UInt16): TScaleTestData;
+    // Get test data record for given scale number
+    function TD(const ScaleNumber: UInt16): TScaleTestData;
 
     procedure CheckIntervalPattern(const Expected, Got: TIntervalPattern;
       const Msg: string = '');
 
-    function RingNumbersFromScales(const AScales: array of TScale): TArray<UInt16>;
+    function ScaleNumbersFromScales(const AScales: array of TScale): TArray<UInt16>;
 
-    procedure CheckRingNumbers(const Expected, Got: array of UInt16;
+    procedure CheckScaleNumbers(const Expected, Got: array of UInt16;
       const Msg: string = ''); overload;
-    procedure CheckRingNumbers(const Expected: array of UInt16;
+
+    procedure CheckScaleNumbers(const Expected: array of UInt16;
       const Got: array of TScale;
       const Msg: string = ''); overload;
+
     procedure CheckSortedScales(const Expected: array of UInt16;
       const Got: array of TScale; const Msg: string = '');
 
@@ -90,50 +92,50 @@ type
     [TestCase('4095 (highest)','4095,True')]
     [TestCase('2471','2471,True')]
     // no dependency
-    procedure IsValidRingNumber(N: Integer; Expected: Boolean);
+    procedure IsValidScaleNumber(N: Integer; Expected: Boolean);
 
     [Test]
-    // test depends on RingNumber property & IsValidRingNumber method
-    procedure RingNumber_prop_setter_and_getter_valid_number;
+    // test depends on ScaleNumber property & IsValidScaleNumber method
+    procedure ScaleNumber_prop_setter_and_getter_valid_number;
     [Test]
-    // test depends on RingNumber property & IsValidRingNumber method
-    procedure RingNumber_prop_setter_and_getter_invalid_number;
+    // test depends on ScaleNumber property & IsValidScaleNumber method
+    procedure ScaleNumber_prop_setter_and_getter_invalid_number;
 
     [Test]
-    // test depends on RingNumber property getter
+    // test depends on ScaleNumber property getter
     procedure default_ctor_creates_Chromatic_scale;
 
     [Test]
-    // depends only on RingNumber property setter
-    procedure RingNumber_ctor_valid_number;
+    // depends only on ScaleNumber property setter
+    procedure ScaleNumber_ctor_valid_number;
     [Test]
-    // depends only on RingNumber property setter
-    procedure RingNumber_ctor_invalid_number;
+    // depends only on ScaleNumber property setter
+    procedure ScaleNumber_ctor_invalid_number;
 
-    // test depends on default & RingNumber ctors & property getter
+    // test depends on default & ScaleNumber ctors & property getter
     [Test]
     procedure assignment_is_correct;
 
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure equals_op_true_for_same_scales;
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure equals_op_false_for_different_scales;
 
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure notequals_op_false_for_same_scales;
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure notequals_op_true_for_different_scales;
 
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure Cardinality_is_correct;
 
     [Test]
-    // depends only on RingNumber property getter & setter
+    // depends only on ScaleNumber property getter & setter
     procedure Inverse_is_correct;
 
     [Test]
@@ -148,20 +150,20 @@ type
     procedure IsValidPitchClassSet_is_false;
 
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure PitchClassSet_prop_getter;
     [Test]
-    // depends on RingNumber property setter and IsValidPitchClassSet method
+    // depends on ScaleNumber property setter and IsValidPitchClassSet method
     procedure PitchClassSet_prop_setter_valid_pattern;
     [Test]
-    // depends on RingNumber property setter and IsValidPitchClassSet method
+    // depends on ScaleNumber property setter and IsValidPitchClassSet method
     procedure PitchClassSet_prop_setter_invalid_pattern;
 
     [Test]
-    // depends on RingNumber property setter and IsValidPitchClassSet method
+    // depends on ScaleNumber property setter and IsValidPitchClassSet method
     procedure PitchClassSet_ctor_valid_set;
     [Test]
-    // depends on RingNumber property setter and IsValidPitchClassSet method
+    // depends on ScaleNumber property setter and IsValidPitchClassSet method
     procedure PitchClassSet_ctor_invalid_set;
 
     [Test]
@@ -175,17 +177,17 @@ type
     // depends on Cardinality method
     procedure IntervalPattern_prop_getter;
     [Test]
-    // depends on RingNumber property getter & IsValidIntervalPattern method
+    // depends on ScaleNumber property getter & IsValidIntervalPattern method
     procedure IntervalPattern_prop_setter_valid_pattern;
     [Test]
-    // depends on RingNumber property getter & IsValidIntervalPattern method
+    // depends on ScaleNumber property getter & IsValidIntervalPattern method
     procedure IntervalPattern_prop_setter_invalid_pattern;
 
     [Test]
-    // depends on RingNumber property getter & IsValidIntervalPattern method
+    // depends on ScaleNumber property getter & IsValidIntervalPattern method
     procedure IntervalPattern_ctor_valid_pattern;
     [Test]
-    // depends on RingNumber property getter & IsValidIntervalPattern method
+    // depends on ScaleNumber property getter & IsValidIntervalPattern method
     procedure IntervalPattern_ctor_invalid_pattern;
 
     [Test]
@@ -193,7 +195,7 @@ type
     procedure Hemitonia_is_correct;
 
     [Test]
-    // depends only on RingNumber property getter
+    // depends only on ScaleNumber property getter
     procedure Cohemitonia_is_correct;
 
     [Test]
@@ -212,7 +214,7 @@ type
     procedure ZeitlerNumberDescending_is_correct;
 
     [Test]
-    // depends on RingNumber getter & ctor
+    // depends on ScaleNumber getter & ctor
     procedure Modes_is_correct;
 
     [Test]
@@ -220,14 +222,14 @@ type
     procedure ModeCount_is_correct;
 
     [Test]
-    // depends on RingNumber getter & ctor
+    // depends on ScaleNumber getter & ctor
     procedure ModalFamily_is_correct;
 
     [Test]
-    // depends on RingNumber getter & ctor
+    // depends on ScaleNumber getter & ctor
     procedure IsContainedIn_is_true;
     [Test]
-    // depends on RingNumber getter & ctor
+    // depends on ScaleNumber getter & ctor
     procedure IsContainedIn_is_false;
 
     [Test]
@@ -238,7 +240,7 @@ type
     procedure IsModeOf_is_false;
 
     [Test]
-    // depends only on RingNumber getter
+    // depends only on ScaleNumber getter
     procedure RotationalSymmetry_is_correct;
 
     [Test]
@@ -265,7 +267,7 @@ type
     [Test]
     procedure IsPrime_is_correct;
 
-    // depends only on RingNumber getter
+    // depends only on ScaleNumber getter
     [Test]
     procedure IntervalVector_is_correct;
 
@@ -290,19 +292,19 @@ uses
 
 procedure TTestScale.assignment_is_correct;
 const
-  RN: UInt16 = 2471;
+  SN: UInt16 = 2471;
 begin
-  var S := TScale.CreateFromRingNumber(RN);
+  var S := TScale.CreateFromScaleNumber(SN);
   var T: TScale;
-  Assert.IsFalse(RN = T.RingNumber, 'Before assignment');
+  Assert.IsFalse(SN = T.ScaleNumber, 'Before assignment');
   T := S;
-  Assert.IsTrue(RN = T.RingNumber, 'After assignment');
+  Assert.IsTrue(SN = T.ScaleNumber, 'After assignment');
 end;
 
 procedure TTestScale.Cardinality_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Cardinality, fScales[D.RingNumber].Cardinality, D.RingName);
+    Assert.AreEqual(D.Cardinality, fScales[D.ScaleNumber].Cardinality, D.ScaleName);
 end;
 
 procedure TTestScale.CheckIntervalPattern(const Expected, Got: TIntervalPattern;
@@ -326,33 +328,13 @@ begin
   Assert.IsTrue(Same, Msg);
 end;
 
-procedure TTestScale.CheckRingNumbers(const Expected: array of UInt16;
+procedure TTestScale.CheckScaleNumbers(const Expected: array of UInt16;
   const Got: array of TScale; const Msg: string);
 begin
-  CheckRingNumbers(Expected, RingNumbersFromScales(Got), Msg);
+  CheckScaleNumbers(Expected, ScaleNumbersFromScales(Got), Msg);
 end;
 
-procedure TTestScale.CheckSortedScales(const Expected: array of UInt16;
-  const Got: array of TScale; const Msg: string);
-
-  function Same: Boolean;
-  begin
-    var GotRN := RingNumbersFromScales(Got);
-    if Length(Expected) <> Length(Got) then
-      Exit(False);
-    for var I := 0 to Pred(Length(Expected)) do
-    begin
-      if Expected[I] <> GotRN[I] then
-        Exit(False);
-    end;
-    Result := True;
-  end;
-
-begin
-  Assert.IsTrue(Same, Msg);
-end;
-
-procedure TTestScale.CheckRingNumbers(const Expected, Got: array of UInt16;
+procedure TTestScale.CheckScaleNumbers(const Expected, Got: array of UInt16;
   const Msg: string);
 
   function IsElemInGot(Elem: UInt16): Boolean;
@@ -384,18 +366,38 @@ begin
   Assert.IsTrue(Same, Msg);
 end;
 
+procedure TTestScale.CheckSortedScales(const Expected: array of UInt16;
+  const Got: array of TScale; const Msg: string);
+
+  function Same: Boolean;
+  begin
+    var GotSN := ScaleNumbersFromScales(Got);
+    if Length(Expected) <> Length(Got) then
+      Exit(False);
+    for var I := 0 to Pred(Length(Expected)) do
+    begin
+      if Expected[I] <> GotSN[I] then
+        Exit(False);
+    end;
+    Result := True;
+  end;
+
+begin
+  Assert.IsTrue(Same, Msg);
+end;
+
 procedure TTestScale.Cohemitonia_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Cohemitonia, fScales[D.RingNumber].Cohemitonia, D.RingName);
+    Assert.AreEqual(D.Cohemitonia, fScales[D.ScaleNumber].Cohemitonia, D.ScaleName);
 end;
 
 procedure TTestScale.Complement_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
   begin
-    CheckRingNumbers(
-      D.Complement, fScales[D.RingNumber].Complement, D.RingName
+    CheckScaleNumbers(
+      D.Complement, fScales[D.ScaleNumber].Complement, D.ScaleName
     );
   end;
 end;
@@ -406,18 +408,18 @@ begin
   fScales := TScalesMap.Create;
   for var Data in fTestData do
   begin
-    // ** Assumes TScale.RingNumber property works => fScales may only be used
-    //    AFTER TScale.RingNumber has been tested.
+    // ** Assumes TScale.ScaleNumber property works => fScales may only be used
+    //    AFTER TScale.ScaleNumber has been tested.
     var Scale: TScale;
-    Scale.RingNumber := Data.RingNumber;
-    fScales.Add(Scale.RingNumber, Scale);
+    Scale.ScaleNumber := Data.ScaleNumber;
+    fScales.Add(Scale.ScaleNumber, Scale);
   end;
 end;
 
 procedure TTestScale.default_ctor_creates_Chromatic_scale;
 begin
   var S: TScale;    // default
-  Assert.AreEqual(4095, S.RingNumber);
+  Assert.AreEqual(4095, S.ScaleNumber);
 end;
 
 destructor TTestScale.Destroy;
@@ -429,28 +431,28 @@ end;
 
 procedure TTestScale.equals_op_false_for_different_scales;
 begin
-  var S1 := TScale.CreateFromRingNumber(2471);
-  var S2 := TScale.CreateFromRingNumber(1193);
+  var S1 := TScale.CreateFromScaleNumber(2471);
+  var S2 := TScale.CreateFromScaleNumber(1193);
   Assert.IsFalse(S1 = S2);
 end;
 
 procedure TTestScale.equals_op_true_for_same_scales;
 begin
-  var S1 := TScale.CreateFromRingNumber(2471);
-  var S2 := TScale.CreateFromRingNumber(2471);
+  var S1 := TScale.CreateFromScaleNumber(2471);
+  var S2 := TScale.CreateFromScaleNumber(2471);
   Assert.IsTrue(S1 = S2);
 end;
 
 procedure TTestScale.Hemitonia_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Hemitonia, fScales[D.RingNumber].Hemitonia, D.RingName);
+    Assert.AreEqual(D.Hemitonia, fScales[D.ScaleNumber].Hemitonia, D.ScaleName);
 end;
 
 procedure TTestScale.Imperfections_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Imperfections, fScales[D.RingNumber].Imperfections, D.RingName);
+    Assert.AreEqual(D.Imperfections, fScales[D.ScaleNumber].Imperfections, D.ScaleName);
 end;
 
 procedure TTestScale.IntervalPattern_ctor_invalid_pattern;
@@ -469,14 +471,14 @@ begin
   for var D: TScaleTestData in fTestData do
   begin
     var S := TScale.CreateFromIntervalPattern(D.Intervals);
-    Assert.AreEqual(D.Intervals, S.IntervalPattern, D.RingName);
+    Assert.AreEqual(D.Intervals, S.IntervalPattern, D.ScaleName);
   end;
 end;
 
 procedure TTestScale.IntervalPattern_prop_getter;
 begin
   for var D: TScaleTestData in fTestData do
-    CheckIntervalPattern(D.Intervals, fScales[D.RingNumber].IntervalPattern, D.RingName);
+    CheckIntervalPattern(D.Intervals, fScales[D.ScaleNumber].IntervalPattern, D.ScaleName);
 end;
 
 procedure TTestScale.IntervalPattern_prop_setter_invalid_pattern;
@@ -497,7 +499,7 @@ begin
   begin
     var S: TScale;
     S.IntervalPattern := D.Intervals;
-    CheckIntervalPattern(D.Intervals, S.IntervalPattern, D.RingName);
+    CheckIntervalPattern(D.Intervals, S.IntervalPattern, D.ScaleName);
   end;
 end;
 
@@ -514,33 +516,33 @@ procedure TTestScale.IntervalVector_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
     Assert.IsTrue(
-      SameVector(D.IntervalVector, fScales[D.RingNumber].IntervalVector), D.RingName
+      SameVector(D.IntervalVector, fScales[D.ScaleNumber].IntervalVector), D.ScaleName
     );
 end;
 
 procedure TTestScale.Inverse_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Inverse, fScales[D.RingNumber].Inverse.RingNumber, D.RingName);
+    Assert.AreEqual(D.Inverse, fScales[D.ScaleNumber].Inverse.ScaleNumber, D.ScaleName);
 end;
 
 procedure TTestScale.IsChiral_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.IsChiral, fScales[D.RingNumber].IsChiral, D.RingName);
+    Assert.AreEqual(D.IsChiral, fScales[D.ScaleNumber].IsChiral, D.ScaleName);
 end;
 
 procedure TTestScale.IsContainedIn_is_false;
 begin
   var A, B: TArray<TScale>;
   SetLength(A, 3);
-  A[0] := TScale.CreateFromRingNumber(65);
-  A[1] := TScale.CreateFromRingNumber(2741);
-  A[2] := TScale.CreateFromRingNumber(3187);
+  A[0] := TScale.CreateFromScaleNumber(65);
+  A[1] := TScale.CreateFromScaleNumber(2741);
+  A[2] := TScale.CreateFromScaleNumber(3187);
 
   SetLength(B, 0);
 
-  var S := TScale.CreateFromRingNumber(1453);
+  var S := TScale.CreateFromScaleNumber(1453);
 
   Assert.IsFalse(S.IsContainedIn(A), '3 elem list');
   Assert.IsFalse(S.IsContainedIn(B), 'empty list');
@@ -550,14 +552,14 @@ procedure TTestScale.IsContainedIn_is_true;
 begin
   var A: TArray<TScale>;
   SetLength(A, 5);
-  A[0] := TScale.CreateFromRingNumber(65);
-  A[1] := TScale.CreateFromRingNumber(2741);
-  A[2] := TScale.CreateFromRingNumber(3187);
-  A[3] := TScale.CreateFromRingNumber(4033);
-  A[4] := TScale.CreateFromRingNumber(1453);
-  var SFirst := TScale.CreateFromRingNumber(65);
-  var SMid := TScale.CreateFromRingNumber(3187);
-  var SLast := TScale.CreateFromRingNumber(1453);
+  A[0] := TScale.CreateFromScaleNumber(65);
+  A[1] := TScale.CreateFromScaleNumber(2741);
+  A[2] := TScale.CreateFromScaleNumber(3187);
+  A[3] := TScale.CreateFromScaleNumber(4033);
+  A[4] := TScale.CreateFromScaleNumber(1453);
+  var SFirst := TScale.CreateFromScaleNumber(65);
+  var SMid := TScale.CreateFromScaleNumber(3187);
+  var SLast := TScale.CreateFromScaleNumber(1453);
   Assert.IsTrue(SFirst.IsContainedIn(A), 'First');
   Assert.IsTrue(SMid.IsContainedIn(A), 'Mid');
   Assert.IsTrue(SLast.IsContainedIn(A), 'Last');
@@ -566,7 +568,7 @@ end;
 procedure TTestScale.IsDeep_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.IsDeep, fScales[D.RingNumber].IsDeep, D.RingName);
+    Assert.AreEqual(D.IsDeep, fScales[D.ScaleNumber].IsDeep, D.ScaleName);
 end;
 
 function TTestScale.IsInArray(const A: array of UInt16;
@@ -580,10 +582,10 @@ end;
 
 procedure TTestScale.IsModeOf_is_false;
 begin
-  var SUnison := TScale.CreateFromRingNumber(1);   // no modes
-  var STritone := TScale.CreateFromRingNumber(65);  // no modes
-  var SMajor := TScale.CreateFromRingNumber(2741);  // 7-tone has modes
-  var SKoptian := TScale.CreateFromRingNumber(3187);  // 7-tone has modes
+  var SUnison := TScale.CreateFromScaleNumber(1);   // no modes
+  var STritone := TScale.CreateFromScaleNumber(65);  // no modes
+  var SMajor := TScale.CreateFromScaleNumber(2741);  // 7-tone has modes
+  var SKoptian := TScale.CreateFromScaleNumber(3187);  // 7-tone has modes
   Assert.IsFalse(SUnison.IsModeOf(SMajor), 'Unison of Major');
   Assert.IsFalse(SUnison.IsModeOf(STritone), 'Unison of Tritone');
   Assert.IsFalse(STritone.IsModeOf(SMajor), 'Tritone of Major');
@@ -594,12 +596,12 @@ end;
 
 procedure TTestScale.IsModeOf_is_true;
 begin
-  var Major := TScale.CreateFromRingNumber(2741);  // 7-tone has modes
-  var Minor := TScale.CreateFromRingNumber(1453);  // 7-tone has modes
-  var Lanic := TScale.CreateFromRingNumber(281);  // 4-tone has modes
-  var Zyphic := TScale.CreateFromRingNumber(2321);  // 4-tone has modes
-  var Heptatonic_Chromatic_Descending  := TScale.CreateFromRingNumber(4033); // 7-tone has modes, non Zeigler
-  var Heptatonic_Chromatic  := TScale.CreateFromRingNumber(127); // 7-tone has modes, non Zeigler
+  var Major := TScale.CreateFromScaleNumber(2741);  // 7-tone has modes
+  var Minor := TScale.CreateFromScaleNumber(1453);  // 7-tone has modes
+  var Lanic := TScale.CreateFromScaleNumber(281);  // 4-tone has modes
+  var Zyphic := TScale.CreateFromScaleNumber(2321);  // 4-tone has modes
+  var Heptatonic_Chromatic_Descending  := TScale.CreateFromScaleNumber(4033); // 7-tone has modes, non Zeigler
+  var Heptatonic_Chromatic  := TScale.CreateFromScaleNumber(127); // 7-tone has modes, non Zeigler
   Assert.IsTrue(Major.IsModeOf(Minor), 'Major of Minor');
   Assert.IsTrue(Minor.IsModeOf(Major), 'Minor of Major');
   Assert.IsTrue(Lanic.IsModeOf(Zyphic), 'Lanic of Zaphic');
@@ -611,13 +613,13 @@ end;
 procedure TTestScale.IsPalindromic_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.IsPalindromic, fScales[D.RingNumber].IsPalindromic, D.RingName);
+    Assert.AreEqual(D.IsPalindromic, fScales[D.ScaleNumber].IsPalindromic, D.ScaleName);
 end;
 
 procedure TTestScale.IsPrime_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.IsPrimeForm, fScales[D.RingNumber].IsPrime, D.RingName);
+    Assert.AreEqual(D.IsPrimeForm, fScales[D.ScaleNumber].IsPrime, D.ScaleName);
 end;
 
 procedure TTestScale.IsValidIntervalPattern_is_false;
@@ -629,7 +631,7 @@ end;
 procedure TTestScale.IsValidIntervalPattern_is_true;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.IsTrue(fScales[D.RingNumber].IsValidIntervalPattern(D.Intervals), D.RingName);
+    Assert.IsTrue(fScales[D.ScaleNumber].IsValidIntervalPattern(D.Intervals), D.ScaleName);
 end;
 
 procedure TTestScale.IsValidPitchClassSet_is_false;
@@ -641,24 +643,24 @@ end;
 procedure TTestScale.IsValidPitchClassSet_is_true;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.IsTrue(fScales[D.RingNumber].IsValidPitchClassSet(D.PitchClassSet), D.RingName);
+    Assert.IsTrue(fScales[D.ScaleNumber].IsValidPitchClassSet(D.PitchClassSet), D.ScaleName);
 end;
 
-procedure TTestScale.IsValidRingNumber(N: Integer; Expected: Boolean);
+procedure TTestScale.IsValidScaleNumber(N: Integer; Expected: Boolean);
 begin
-  Assert.AreEqual(Expected, TScale.IsValidRingNumber(N));
+  Assert.AreEqual(Expected, TScale.IsValidScaleNumber(N));
 end;
 
 procedure TTestScale.IsZeitler_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.IsZeitlerScale, fScales[D.RingNumber].IsZeitlerScale, D.RingName);
+    Assert.AreEqual(D.IsZeitlerScale, fScales[D.ScaleNumber].IsZeitlerScale, D.ScaleName);
 end;
 
 procedure TTestScale.Leap_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(Integer(D.Leap), Integer(fScales[D.RingNumber].Leap), D.RingName);
+    Assert.AreEqual(Integer(D.Leap), Integer(fScales[D.ScaleNumber].Leap), D.ScaleName);
 end;
 
 procedure TTestScale.ModalFamily_is_correct;
@@ -667,11 +669,11 @@ begin
   for var D: TScaleTestData in fTestData do
   begin
     // TTestScaleData doesn't contain a suitable element, so we must calculate
-    // the expected result by adding ring number of element to Modes array and
+    // the expected result by adding scale number of element to Modes array and
     // then sorting it
     var Expected := D.Modes;
     SetLength(Expected, Length(Expected) + 1);
-    Expected[Pred(Length(Expected))] := D.RingNumber;
+    Expected[Pred(Length(Expected))] := D.ScaleNumber;
     TArray.Sort<UInt16>(
       Expected,
       TDelegatedComparer<UInt16>.Create(
@@ -681,40 +683,40 @@ begin
         end
       )
     );
-    CheckSortedScales(Expected, fScales[D.RingNumber].ModalFamily, D.RingName);
+    CheckSortedScales(Expected, fScales[D.ScaleNumber].ModalFamily, D.ScaleName);
   end;
 end;
 
 procedure TTestScale.ModeCount_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.ModeCount, fScales[D.RingNumber].ModeCount, D.RingName);
+    Assert.AreEqual(D.ModeCount, fScales[D.ScaleNumber].ModeCount, D.ScaleName);
 end;
 
 procedure TTestScale.Modes_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    CheckRingNumbers(D.Modes, fScales[D.RingNumber].Modes, D.RingName);
+    CheckScaleNumbers(D.Modes, fScales[D.ScaleNumber].Modes, D.ScaleName);
 end;
 
 procedure TTestScale.notequals_op_false_for_same_scales;
 begin
-  var S1 := TScale.CreateFromRingNumber(1193);
-  var S2 := TScale.CreateFromRingNumber(1193);
+  var S1 := TScale.CreateFromScaleNumber(1193);
+  var S2 := TScale.CreateFromScaleNumber(1193);
   Assert.IsFalse(S1 <> S2);
 end;
 
 procedure TTestScale.notequals_op_true_for_different_scales;
 begin
-  var S1 := TScale.CreateFromRingNumber(2471);
-  var S2 := TScale.CreateFromRingNumber(1193);
+  var S1 := TScale.CreateFromScaleNumber(2471);
+  var S2 := TScale.CreateFromScaleNumber(1193);
   Assert.IsTrue(S1 <> S2);
 end;
 
 procedure TTestScale.Perfections_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.Perfections, fScales[D.RingNumber].Perfections, D.RingName);
+    Assert.AreEqual(D.Perfections, fScales[D.ScaleNumber].Perfections, D.ScaleName);
 end;
 
 procedure TTestScale.PitchClassSet_ctor_invalid_set;
@@ -733,14 +735,14 @@ begin
   for var D: TScaleTestData in fTestData do
   begin
     var S := TScale.CreateFromPitchClassSet(D.PitchClassSet);
-    Assert.AreEqual(D.PitchClassSet, S.PitchClassSet, D.RingName);
+    Assert.AreEqual(D.PitchClassSet, S.PitchClassSet, D.ScaleName);
   end;
 end;
 
 procedure TTestScale.PitchClassSet_prop_getter;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.PitchClassSet, fScales[D.RingNumber].PitchClassSet, D.RingName);
+    Assert.AreEqual(D.PitchClassSet, fScales[D.ScaleNumber].PitchClassSet, D.ScaleName);
 end;
 
 procedure TTestScale.PitchClassSet_prop_setter_invalid_pattern;
@@ -761,61 +763,14 @@ begin
   begin
     var S: TScale;
     S.PitchClassSet := D.PitchClassSet;
-    Assert.AreEqual(D.PitchClassSet, S.PitchClassSet, D.RingName);
+    Assert.AreEqual(D.PitchClassSet, S.PitchClassSet, D.ScaleName);
   end;
 end;
 
 procedure TTestScale.RahnPrime_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.PrimeRingNumber, fScales[D.RingNumber].RahnPrime.RingNumber, D.RingName);
-end;
-
-function TTestScale.RingNumbersFromScales(
-  const AScales: array of TScale): TArray<UInt16>;
-begin
-  SetLength(Result, Length(AScales));
-  for var I := Low(AScales) to High(AScales) do
-    Result[I] := AScales[I].RingNumber;
-end;
-
-procedure TTestScale.RingNumber_ctor_invalid_number;
-begin
-  Assert.WillRaise(
-    procedure
-    begin
-      var S := TScale.CreateFromRingNumber(2472);
-    end,
-    EScale
-  );
-end;
-
-procedure TTestScale.RingNumber_ctor_valid_number;
-begin
-  var S := TScale.CreateFromRingNumber(2471);
-  Assert.AreEqual(2471, S.RingNumber);
-end;
-
-procedure TTestScale.RingNumber_prop_setter_and_getter_invalid_number;
-begin
-  Assert.WillRaise(
-    procedure
-    begin
-      var S: TScale;
-      S.RingNumber := 4096;
-    end,
-    EScale
-  );
-end;
-
-procedure TTestScale.RingNumber_prop_setter_and_getter_valid_number;
-begin
-  var S: TScale;
-  for var D in fTestData do
-  begin
-    S.RingNumber := D.RingNumber;
-    Assert.AreEqual(Integer(D.RingNumber), Integer(S.RingNumber), D.RingName);
-  end;
+    Assert.AreEqual(D.PrimeRingNumber, fScales[D.ScaleNumber].RahnPrime.ScaleNumber, D.ScaleName);
 end;
 
 procedure TTestScale.RotationalSymmetryCount_is_correct;
@@ -826,23 +781,70 @@ begin
     for var Elem := 1 to 12 do
       if Elem in D.RotationalSymmetry then
         Inc(RotCount);
-    Assert.AreEqual(RotCount, fScales[D.RingNumber].RotationalSymmetryCount, D.RingName);
+    Assert.AreEqual(RotCount, fScales[D.ScaleNumber].RotationalSymmetryCount, D.ScaleName);
   end;
 end;
 
 procedure TTestScale.RotationalSymmetry_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.RotationalSymmetry, fScales[D.RingNumber].RotationalSymmetry, D.RingName);
+    Assert.AreEqual(D.RotationalSymmetry, fScales[D.ScaleNumber].RotationalSymmetry, D.ScaleName);
+end;
+
+function TTestScale.ScaleNumbersFromScales(
+  const AScales: array of TScale): TArray<UInt16>;
+begin
+  SetLength(Result, Length(AScales));
+  for var I := Low(AScales) to High(AScales) do
+    Result[I] := AScales[I].ScaleNumber;
+end;
+
+procedure TTestScale.ScaleNumber_ctor_invalid_number;
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var S := TScale.CreateFromScaleNumber(2472);
+    end,
+    EScale
+  );
+end;
+
+procedure TTestScale.ScaleNumber_ctor_valid_number;
+begin
+  var S := TScale.CreateFromScaleNumber(2471);
+  Assert.AreEqual(2471, S.ScaleNumber);
+end;
+
+procedure TTestScale.ScaleNumber_prop_setter_and_getter_invalid_number;
+begin
+  Assert.WillRaise(
+    procedure
+    begin
+      var S: TScale;
+      S.ScaleNumber := 4096;
+    end,
+    EScale
+  );
+end;
+
+procedure TTestScale.ScaleNumber_prop_setter_and_getter_valid_number;
+begin
+  var S: TScale;
+  for var D in fTestData do
+  begin
+    S.ScaleNumber := D.ScaleNumber;
+    Assert.AreEqual(Integer(D.ScaleNumber), Integer(S.ScaleNumber), D.ScaleName);
+  end;
 end;
 
 procedure TTestScale.Setup;
 begin
 end;
 
-function TTestScale.TD(const RingNumber: UInt16): TScaleTestData;
+function TTestScale.TD(const ScaleNumber: UInt16): TScaleTestData;
 begin
-  Result := fTestData.Values[RingNumber];
+  Result := fTestData.Values[ScaleNumber];
 end;
 
 procedure TTestScale.TearDown;
@@ -852,13 +854,13 @@ end;
 procedure TTestScale.ZeitlerNumberAscending_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.ZeitlerNumberAsc, fScales[D.RingNumber].ZeitlerNumber(True), D.RingName);
+    Assert.AreEqual(D.ZeitlerNumberAsc, fScales[D.ScaleNumber].ZeitlerNumber(True), D.ScaleName);
 end;
 
 procedure TTestScale.ZeitlerNumberDescending_is_correct;
 begin
   for var D: TScaleTestData in fTestData do
-    Assert.AreEqual(D.ZeitlerNumberDesc, fScales[D.RingNumber].ZeitlerNumber(False), D.RingName);
+    Assert.AreEqual(D.ZeitlerNumberDesc, fScales[D.ScaleNumber].ZeitlerNumber(False), D.ScaleName);
 end;
 
 initialization
