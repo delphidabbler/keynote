@@ -74,6 +74,8 @@
         <DCCReference Include="Test.Music.Keys.pas"/>
         <DCCReference Include="Test.Database.Scales.pas"/>
         <DCCReference Include="..\src\Database.Scales.pas"/>
+        <DCCReference Include="..\src\IO.TextStreams.pas"/>
+        <DCCReference Include="Test.IO.TextStreams.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

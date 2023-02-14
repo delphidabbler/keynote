@@ -27,7 +27,9 @@ uses
   Music.Keys in '..\src\Music.Keys.pas',
   Test.Music.Keys in 'Test.Music.Keys.pas',
   Test.Database.Scales in 'Test.Database.Scales.pas',
-  Database.Scales in '..\src\Database.Scales.pas';
+  Database.Scales in '..\src\Database.Scales.pas',
+  IO.TextStreams in '..\src\IO.TextStreams.pas',
+  Test.IO.TextStreams in 'Test.IO.TextStreams.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
