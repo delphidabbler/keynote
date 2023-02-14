@@ -25,7 +25,9 @@ uses
   Music.CircleOf5ths in '..\src\Music.CircleOf5ths.pas',
   Test.Music.CircleOf5ths in 'Test.Music.CircleOf5ths.pas',
   Music.Keys in '..\src\Music.Keys.pas',
-  Test.Music.Keys in 'Test.Music.Keys.pas';
+  Test.Music.Keys in 'Test.Music.Keys.pas',
+  Test.Database.Scales in 'Test.Database.Scales.pas',
+  Database.Scales in '..\src\Database.Scales.pas';
 
 {$IFNDEF TESTINSIGHT}
 var
