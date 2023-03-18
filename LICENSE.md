@@ -2,7 +2,7 @@
 
 The original source code of this program is licensed under the MIT License (see below).
 
-Some scale names and numbers used in this program are copyright © 2005 William Zeitler <https://allthescales.org> and are used with permission.
+Some scale names and numbers used in this program are copyright © 2005 William Zeitler <https://allthescales.org> and are used with permission. Such permission applies only to official releases of this program made from the [delphidabbler/keynote](https://github.com/delphidabbler/keynote) repository on GitHub. Anyone releasing binaries or source code based on the code in this repository MUST seek separate permission from the copyright holder.
 
 ## MIT License
 
