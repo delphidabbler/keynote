@@ -1,0 +1,81 @@
+# .reascale files can be loaded into the REAPER MIDI editor, via the Scale dropdown list.
+#
+# Types (the first number):
+# -2: end of submenu
+# -1: separator
+# 0: scale
+# 1: chord
+# 2: submenu in scale section
+# 3: submenu in chord section
+#
+# Lines starting with '#' are ignored.
+#
+# To create a scale definition, place each interval number
+# at the correct number of semitones from the left (root).
+#
+# For snapping to scale, all that matters is which values are not zero.
+# The actual interval numbers are only used when transposing, and can be repeated.
+# If needed (for exotic scales), use A=10, B=11, C=12, etc.
+
+
+0 "Major"           100030050000
+0 "Minor"           100300050000
+0 "Diminished"      100300500000
+0 "Augmented"       100030005000
+0 "Sus 4"           100004050000
+0 "Sus 2"           102000050000
+0 "Flat 5"          100030500000
+0 "Major 7"         100030050007
+0 "Major 7 #5"      100030005007
+0 "Major 7 b5"      100030500007
+0 "Dominant 7"	    100030050070
+0 "Dominant 7 #5"   100030005070
+0 "Dominant 7 b5"   100030500070
+0 "Minor Major 7"   100300050007
+0 "Dim Major 7"     100300500007
+0 "Minor 7 b5"      100300500070
+0 "Diminished 7"    100300500700
+0 "Minor 7"         100300050070
+0 "minor 7 b5"      100300005070
+0 "Dominant sus 4"  100004050070
+0 "Major sus 4"     100004050007
+0 "Major 6"         100030050600
+0 "Minor 6"         100300050600
+0 "Major add 9"     109030050000
+0 "Minor add 9"     109300050000
+0 "Major 9"         109030050007
+0 "Maj 9 #5"        109030005007
+0 "Maj 9 b5"        109030500007
+0 "Dominant 9"      109030050070
+0 "Dom 9 b5"        109030500070
+0 "Dom 9 #5"        109030005070
+0 "Dom 7 #9"        100930050070
+0 "Dom 7 b9"        190030050070
+0 "Dom 7 #5 #9"     100930005070
+0 "Dom 7 #5 b9"     190030005070
+0 "Dom 7 b5 #9"     100930500070
+0 "Dom 7 b5 b9"     190030500070
+0 "Dom 9 sus 4"     109004050070
+0 "Min 9"           109300050070
+0 "Min 9 Maj 7"     109300050007
+0 "Dim Maj 9"       109300500007
+0 "Min 9 b5"        109300500070
+0 "Min 6/9"         109300050600
+0 "Maj 6/9"         109030050600
+0 "Maj 6/11"        10003B050600
+0 "Min 6/11"        10030B050600
+0 "Maj 9 #11"       109030B50007
+0 "Maj 9 #5 #11"    109030B05007
+0 "Dom 9 #11"       109030B50070
+0 "Dom 7 #9 #11"    100930B50070
+0 "Dom 7 b9 #11"    190030B50070
+0 "Dom 7"           10900B050070
+0 "Min 11"          10930B050070
+0 "Min 11 b5"       10930B500070
+0 "Maj 13 #11"      109030B50D07
+0 "Dom 13 #11"      109030B50D70
+0 "Dom 13 sus 4"    109004050D70
+O "Dom 13 b9"       190030050D70
+0 "Dom 13"          109030050D70
+0 "Dom 13 b9 sus 4" 190004050D70
+0 "Min 13"          10930B050D70
